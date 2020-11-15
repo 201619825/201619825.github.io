@@ -59,6 +59,57 @@
       <div id="middlecontent" title class="global-width sidebar-right">
         <section id="main">
   
+    <article id="post-split-table" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/11/15/split-table/">Java 水平分表操作</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/11/15/split-table/" class="article-date">
+  <time datetime="2020-11-15T05:54:20.000Z" itemprop="datePublished">2020-11-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java 水平分表操作
+前言
+ 背景：现有一张上亿数据的表，为更好的维护表中的数据及降低风险，现对这张上亿数据的表进行水平分表的操作，即根据创建时间来生成路由信息，再根据路由信息去判断读写哪张表的数据。人们都对第一次的事物操作比较印象深刻，此次也是希望帮到我后面再进行分表操作时能够考虑的更加完备。下面的分表方法是自己第一次进行分表操作，沿用的组内大哥的分表思维及代码结构，不得不说对自己帮助是很大。
+特别鸣谢：感谢组内带我的大哥，觉得此方法无论在表的扩展性还是风险性上都考虑的很完备，本方法也是传授给我人生第一次的分表操作，尤其是思维上告诉了自己有哪些需要注意的细节点等，很是感激～
+
+1. 新建枚
+        
+          <p class="article-more-link">
+            <a href="/2020/11/15/split-table/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
     <article id="post-java-strategy1" class="article global-container article-type-post" itemscope itemprop="blogPost">
   
     <header class="article-header">
@@ -502,7 +553,7 @@ $
   <div class="widget-box">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/github/" style="font-size: 20px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a>
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a>
     </div>
   </div>
 
@@ -523,6 +574,10 @@ $
       <ul>
         
           <li>
+            <a href="/2020/11/15/split-table/">Java 水平分表操作</a>
+          </li>
+        
+          <li>
             <a href="/2020/11/11/java-strategy1/">java 策略模式实现(一)</a>
           </li>
         
@@ -536,10 +591,6 @@ $
         
           <li>
             <a href="/2020/04/03/github-jsdelivr/">github+jsdelivr+picGo图床</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/31/v2ray/">v2ray+nginx+ws+tls</a>
           </li>
         
       </ul>
