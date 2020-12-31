@@ -98,23 +98,7 @@
 
 3、@Value是在AbstractAutowireCapableBeanFactory类的doCreateBean方法中进行初始化，即交由Spring容器进行处理，如果没有@Component及其衍生注解注释Spring无法识别，导致无法获取到配置值。
 
-1. 解决办法
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-
-
-@Component
-class TestUtils
+4、把@Value(value=”${properties.alias}”)放到静态变量的set方法上面即可，需要注意的是se
         
           <p class="article-more-link">
             <a href="/2020/12/30/proper-static-value/#more">阅读全文</a>
