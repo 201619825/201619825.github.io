@@ -59,6 +59,264 @@
       <div id="middlecontent" title class="global-width sidebar-right">
         <section id="main">
   
+    <article id="post-jdk-dynamic-proxy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/04/20/jdk-dynamic-proxy/">java jdk动态代理</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/04/20/jdk-dynamic-proxy/" class="article-date">
+  <time datetime="2021-04-20T11:47:39.000Z" itemprop="datePublished">2021-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        JDK动态代理（AOP）使用及实现原理分析
+1. 前言
+介绍:我们需要掌握的程度
+
+动态代理(理解) 基于反射机制
+
+掌握的程度:
+
+ * 什么是动态代理?
+   
+   
+ * 动态代理能够做什么?
+   
+   
+
+后面我们在用Spirng和Mybatis的时候,要理解怎么使用的.
+
+ 1. 什么是代理?
+    代理,在我们日常生活之中就有体现,代购,中介,换ip,商家等等，比如有一家美国的大学,可以对全世界招生.留学中介(代理 )，留学中介(代理):帮助这家美国的学校招生,中介是学校的代理中介是代替学校完成招生功能，代理特点：
+
+中介和代理他们要做的事情是一致的:招生
+中介是学校代理,
+        
+          <p class="article-more-link">
+            <a href="/2021/04/20/jdk-dynamic-proxy/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-self-param-anno" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/04/20/self-param-anno/">java 自定义参数解析器</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/04/20/self-param-anno/" class="article-date">
+  <time datetime="2021-04-20T11:47:39.000Z" itemprop="datePublished">2021-04-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java自定义参数解析器
+1. 前言
+背景：为实现前后端分离，前端经过物理网关传入的参数总是封装在body参数体里，造成后端每次需要从body体里拿出参数，转换为自定义接收对象requestBean，从代码简洁度及效率上来说实现起来很不方便。
+
+2. 编写自定义注解
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+
+
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+p
+        
+          <p class="article-more-link">
+            <a href="/2021/04/20/self-param-anno/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-spring-base" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/04/10/spring-base/">spring应用上下文</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/04/10/spring-base/" class="article-date">
+  <time datetime="2021-04-10T13:28:14.000Z" itemprop="datePublished">2021-04-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        spring应用上下文
+1. 容器概念
+如果你想要一个手机,好这时候spring就给你一个手机.你想要使用的对象,spring就会给你,但是现在我们就会问那spring给的对象来自于哪里呢?
+
+spring要负责的工作很多,那么多对象的创建管理都是它在负责,那肯定会有一个地方是负责造对象的.造手机的叫工厂,而spring造对象的不叫所谓的工厂,如果叫工厂有点low,所以给出一个高大尚的名称–容器.所以现在对容器这个概念有一个新的认识了吧.
+
+容器是spring框架实现的功能的核心.(spring的核心是容器,这没有错,但是容器并不唯一,框架本身提供了多个容器的实现,具体的后面会讲).因为没有对
+        
+          <p class="article-more-link">
+            <a href="/2021/04/10/spring-base/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-self-thread" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/04/06/self-thread/">java 自定义实现线程池</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/04/06/self-thread/" class="article-date">
+  <time datetime="2021-04-06T06:57:50.000Z" itemprop="datePublished">2021-04-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java自定义实现线程池
+1. 前言
+本文将追寻ThreadPoolExecutor类的代码思路模拟jdk下线程池的执行策略，实现一个自己的线程池，文章目的主要是为了研究jdk下ThreadPoolExecutor的设计思想，理解作者为什么要这样设计，这么设计有什么好处，而不是为了重复造轮子，建议在工作中尽量使用类库，本文将实现此接口来实现一个自己的线程池，将不考虑线程池的生命周期变化，只考虑其执行任务流程，类中主要属性和构造方法如下：
+
+ 1. 编写任务类（MyTask）实现Runnable接口
+ 2. 编写线程类（MyWorker），用于执行任务，需要持有所有任务；
+ 3. 编写线程池类（
+        
+          <p class="article-more-link">
+            <a href="/2021/04/06/self-thread/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
     <article id="post-threadpool" class="article global-container article-type-post" itemscope itemprop="blogPost">
   
     <header class="article-header">
@@ -385,215 +643,11 @@ public enum Posi
 </article>
 
   
-    <article id="post-anno-reflect" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/02/08/anno-reflect/">java 策略模式实现(三)</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2021/02/08/anno-reflect/" class="article-date">
-  <time datetime="2021-02-08T12:36:38.000Z" itemprop="datePublished">2021-02-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        java 基于注解策略模式实现(三)
-前言
-定义：在策略模式（Strategy Pattern）中，一个类的行为或其算法可以在运行时更改，这种类型的设计模式属于行为型模式。Strategy的意思是“策略”，指的是与敌军对垒时行军作战的方法。在策略模式中，我们创建各种表示策略的对象和一个行为随着策略对象改变而改变的context对象。策略对象改变context对象的执行算法。定义一系列的算法,把策略对象一个个封装起来, 并且使它们可相互替换。主要解决在有多种算法相似的情况下，使用 if…else 所带来的复杂和难以维护。
-场景：根据自定义注解+反射机制实现策略模式的使用
-
-1. 新建每个小场景必
-        
-          <p class="article-more-link">
-            <a href="/2021/02/08/anno-reflect/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
-    <article id="post-java-strategy2" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/02/08/java-strategy2/">java 策略模式实现(二)</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2021/02/08/java-strategy2/" class="article-date">
-  <time datetime="2021-02-08T02:58:01.000Z" itemprop="datePublished">2021-02-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        java 策略模式实现(二)
-前言
-定义：在策略模式（Strategy Pattern）中，一个类的行为或其算法可以在运行时更改，这种类型的设计模式属于行为型模式。Strategy的意思是“策略”，指的是与敌军对垒时行军作战的方法。在策略模式中，我们创建各种表示策略的对象和一个行为随着策略对象改变而改变的context对象。策略对象改变context对象的执行算法。定义一系列的算法,把策略对象一个个封装起来, 并且使它们可相互替换。主要解决在有多种算法相似的情况下，使用 if…else 所带来的复杂和难以维护。
-场景：一个大业态场景下划分出许多小场景，每个小场景可能执行的动作不一致，但最终是完
-        
-          <p class="article-more-link">
-            <a href="/2021/02/08/java-strategy2/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
-    <article id="post-mysql-lock" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/12/04/mysql-lock/">mysql锁讲解笔记</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2020/12/04/mysql-lock/" class="article-date">
-  <time datetime="2020-12-04T12:36:12.000Z" itemprop="datePublished">2020-12-04</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        mysql锁讲解笔记
-前言. 基础知识
- * mysql在5.5之前默认使用 MyISAM 存储引擎，之后使用 InnoDB
- * MyISAM 操作数据都是使用的表锁，你更新一条记录就要锁整个表，导致性能较低，并发不高，当然同时它也不会存在死锁问题
- * InnoDB ：1. 支持事务； 2. 采用了行级锁。即需要修改哪行，就可以只锁定哪行
- * InnoDB 行锁是通过给索引项加锁实现的，如果没有索引，InnoDB 会通过隐藏的聚簇索引来对记录加锁
- * 行级锁并不是直接锁记录，而是锁索引，如果一条sql 语句操作了主键索引，Mysql 就会锁定这条主键索引；如果一条语句操作了非主键索引，
-        
-          <p class="article-more-link">
-            <a href="/2020/12/04/mysql-lock/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
-    <article id="post-anno-transaction" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/11/28/anno-transaction/">Java事务失效场景及自定义注解实现事务</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2020/11/28/anno-transaction/" class="article-date">
-  <time datetime="2020-11-28T14:18:54.000Z" itemprop="datePublished">2020-11-28</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        Java事务失效场景及自定义注解实现事务
-前言. 事务失效场景
-1、spring的事务注解@Transactional只能放在public修饰的方法上才起作用，如果放在其他非public（private，protected）方法上，虽然不报错，但是事务不起作用
-
-2、如果采用spring+spring mvc，则context:component-scan重复扫描问题可能会引起事务失败。
-如果spring和mvc的配置文件中都扫描了service层，那么事务就会失效。
-原因：因为按照spring配置文件的加载顺序来讲，先加载springmvc配置文件，再加载spring配置文件，我们的事物一般
-        
-          <p class="article-more-link">
-            <a href="/2020/11/28/anno-transaction/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
 
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">下一页 &amp;raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">下一页 &amp;raquo;</a>
   </nav>
 
 
@@ -639,7 +693,7 @@ public enum Posi
   <div class="widget-box">
     <h3 class="widget-title">时光轴</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
     </div>
   </div>
 
@@ -651,23 +705,23 @@ public enum Posi
       <ul>
         
           <li>
+            <a href="/2021/04/20/jdk-dynamic-proxy/">java jdk动态代理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/20/self-param-anno/">java 自定义参数解析器</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/10/spring-base/">spring应用上下文</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/06/self-thread/">java 自定义实现线程池</a>
+          </li>
+        
+          <li>
             <a href="/2021/03/20/threadpool/">java 线程池获取返回值</a>
-          </li>
-        
-          <li>
-            <a href="/2021/03/20/java-lamada3/">JDK1.8新特性--Lamada表达式（三）</a>
-          </li>
-        
-          <li>
-            <a href="/2021/03/20/java-lamada2/">JDK1.8新特性--Lamada表达式（二）</a>
-          </li>
-        
-          <li>
-            <a href="/2021/03/20/java-lamada1/">JDK1.8新特性--Lamada表达式（一）</a>
-          </li>
-        
-          <li>
-            <a href="/2021/03/06/concurrent-lock/">java 添加二级缓存并实现并发锁</a>
           </li>
         
       </ul>
