@@ -59,6 +59,283 @@
       <div id="middlecontent" title class="global-width sidebar-right">
         <section id="main">
   
+    <article id="post-split-table" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/11/15/split-table/">Java 水平分表操作</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/11/15/split-table/" class="article-date">
+  <time datetime="2020-11-15T05:54:20.000Z" itemprop="datePublished">2020-11-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java 水平分表操作
+前言
+ 背景：现有一张上亿数据的表，为更好的维护表中的数据及降低风险，现对这张上亿数据的表进行水平分表的操作，即根据创建时间来生成路由信息，再根据路由信息去判断读写哪张表的数据。人们都对第一次的事物操作比较印象深刻，此次也是希望帮到我后面再进行分表操作时能够考虑的更加完备。下面的分表方法是自己第一次进行分表操作，沿用的组内大哥的分表思维及代码结构，不得不说对自己帮助是很大。
+特别鸣谢：感谢组内带我的大哥，觉得此方法无论在表的扩展性还是风险性上都考虑的很完备，本方法也是传授给我人生第一次的分表操作，尤其是思维上告诉了自己有哪些需要注意的细节点等，很是感激～
+
+1. 新建枚
+        
+          <p class="article-more-link">
+            <a href="/2020/11/15/split-table/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-java-strategy1" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/11/11/java-strategy1/">java 策略模式实现(一)</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/11/11/java-strategy1/" class="article-date">
+  <time datetime="2020-11-11T12:38:50.000Z" itemprop="datePublished">2020-11-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        java 策略模式实现(一)
+前言
+定义：在策略模式（Strategy Pattern）中，一个类的行为或其算法可以在运行时更改，这种类型的设计模式属于行为型模式。Strategy的意思是“策略”，指的是与敌军对垒时行军作战的方法。在策略模式中，我们创建各种表示策略的对象和一个行为随着策略对象改变而改变的context对象。策略对象改变context对象的执行算法。定义一系列的算法,把策略对象一个个封装起来, 并且使它们可相互替换。主要解决在有多种算法相似的情况下，使用 if…else 所带来的复杂和难以维护。
+场景：如我们开发一个活动页，活动页下有活动图、商品等多个楼层，而这些楼层的基础属性
+        
+          <p class="article-more-link">
+            <a href="/2020/11/11/java-strategy1/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-abstract-class" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/10/22/abstract-class/">Java抽象类使用场景</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/10/22/abstract-class/" class="article-date">
+  <time datetime="2020-10-22T08:00:16.000Z" itemprop="datePublished">2020-10-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java抽象类使用场景
+前言. 事务失效场景
+ 1. 定义：描述一类事物的时候，发现该事物确实存在着某种行为，但是目前该行为是不具体的，那么这时候我们应该抽取该方法的声明，不去实现该方法，这时候我们应该使用抽象类。
+ 2. 场景：应用抽象类一般被用作模版
+ 3. 语法： * 如果一个方法没有方法体，那么该方法必须使用abstract修饰。
+     * 如果一个类有抽象的方法，那么该类也必须使用abstract修饰。
+     * 非抽象类继承抽象类的时候，必须要把抽象类中的所有抽象方法全部实现。
+     * 抽象类可以定义抽象方法以及非抽象方法。
+     * 抽象类是可以不存在抽象方法的
+        
+          <p class="article-more-link">
+            <a href="/2020/10/22/abstract-class/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-javaUtilClass" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/10/21/javaUtilClass/">java常用工具类笔记</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/10/21/javaUtilClass/" class="article-date">
+  <time datetime="2020-10-21T10:15:42.000Z" itemprop="datePublished">2020-10-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java常用工具类笔记
+1. Json串数据转换为对象
+1
+
+
+MainFloorBanner banner = JSON.parseObject(resourceInfoJson,MainFloorBanner.class);
+
+
+2. lamda表达式
+1
+2
+3
+4
+5
+6
+7
+
+
+List<Long> areaList = Lists.transform(Arrays.asList(approveObj.getAreas().trim().split(",")), new Function<String, Long>() {
+    @Nullable
+    @Override
+  
+        
+          <p class="article-more-link">
+            <a href="/2020/10/21/javaUtilClass/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-maven-d-edit" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/05/maven-d-edit/">Eclipse修改maven工程部署名</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/04/05/maven-d-edit/" class="article-date">
+  <time datetime="2020-04-05T10:29:45.000Z" itemprop="datePublished">2020-04-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/" rel="tag">maven</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Eclipse下修改maven项目工程的部署名
+前言
+ 本文主要介绍eclipse工具下如何修改maven工程项目的部署名，原理都是一致的最主要的就是修改如下几个内容，idea工具下自己也可尝试进行如下配置，修改完成后将项目从tomcat中移除之后再重新部署，启动tomcat服务后便可使用新的工程部署名进行访问了。
+
+第一步：打开Navigator视图
+ 1. [点击windows导航]–>[show View]–>[双击Navigator]
+    
+    
+ 2. [选择Navigator视图]–>[项目名]–>[setting]–>[打开后缀为component的文件]
+    
+  
+        
+          <p class="article-more-link">
+            <a href="/2020/04/05/maven-d-edit/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
     <article id="post-github-jsdelivr" class="article global-container article-type-post" itemscope itemprop="blogPost">
   
     <header class="article-header">
@@ -335,7 +612,7 @@ $
   <div class="widget-box">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a>
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
     </div>
   </div>
 
@@ -344,7 +621,7 @@ $
   <div class="widget-box">
     <h3 class="widget-title">时光轴</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
     </div>
   </div>
 
@@ -356,23 +633,23 @@ $
       <ul>
         
           <li>
-            <a href="/2021/04/20/jdk-dynamic-proxy/">java jdk动态代理</a>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
           </li>
         
           <li>
-            <a href="/2021/04/20/self-param-anno/">java 自定义参数解析器</a>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
           </li>
         
           <li>
-            <a href="/2021/04/10/spring-base/">spring应用上下文</a>
+            <a href="/2021/06/07/factory/">Java 工厂模式</a>
           </li>
         
           <li>
-            <a href="/2021/04/06/self-thread/">java 自定义实现线程池</a>
+            <a href="/2021/05/28/offer-2/">Java网络通信</a>
           </li>
         
           <li>
-            <a href="/2021/03/20/threadpool/">java 线程池获取返回值</a>
+            <a href="/2021/05/28/offer-1/">Java 线程与锁机制</a>
           </li>
         
       </ul>

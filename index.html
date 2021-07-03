@@ -59,6 +59,283 @@
       <div id="middlecontent" title class="global-width sidebar-right">
         <section id="main">
   
+    <article id="post-mq-info1" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/07/03/mq-info1/" class="article-date">
+  <time datetime="2021-07-03T09:08:54.000Z" itemprop="datePublished">2021-07-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="tag">中间件</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        MQ的使用及介绍
+1. 前言
+MQ：MessageQueue，消息队列。队列是一种FIFO先进先出的数据结构，消息由生产者发送到MQ进行排队，然后由消费者对消息进行处理，QQ，微信就是典型的MQ场景。
+MQ的作用主要由三个方面：
+
+ * 异步：能提高系统的响应速度和吞吐量。
+ * 解耦：服务间解耦，可以减少服务间的影响，提高系统的稳定性和可扩展性（例如通过MQ消息，java服务去使用python的服务）。
+ * 削峰：以稳定的系统资源应对突发的流量冲击（例如秒杀场景的流量交给MQ去处理）。
+   MQ的缺点：
+ * 系统的可用性降低，一旦MQ宕机，整个业务都会产生影响。高可用。
+ * 系统的复
+        
+          <p class="article-more-link">
+            <a href="/2021/07/03/mq-info1/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-elsticSearch" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/06/22/elsticSearch/" class="article-date">
+  <time datetime="2021-06-22T02:41:43.000Z" itemprop="datePublished">2021-06-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="tag">中间件</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        ElasticSearch 概念及使用
+1. 前言
+Elasticsearch 是一个分布式文档储存中间件，它不会将信息储存为列数据行，而是储存已序列化为 JSON 文档的复杂数据结构。当你在一个集群中有多个节点时，储存的文档分布在整个集群里面，并且立刻可以从任意节点去访问。
+
+当文档被储存时，它将建立索引并且近实时（1s）被搜索。 Elasticsearch 使用一种被称为倒排索引的数据结构，该结构支持快速全文搜索。在倒排索引里列出了所有文档中出现的每一个唯一单词并分别标识了每个单词在哪一个文档中。
+
+Elasticsearch 具备默认模式的能力，这意味着文档建立索引的时候无需明确指定每个
+        
+          <p class="article-more-link">
+            <a href="/2021/06/22/elsticSearch/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-factory" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/06/07/factory/">Java 工厂模式</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/06/07/factory/" class="article-date">
+  <time datetime="2021-06-07T09:12:16.000Z" itemprop="datePublished">2021-06-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java 工厂模式
+1. Java接口回顾
+ 1. Java中接口的概念
+    在Java中接口是一种特殊的抽象类，根一般的抽象类相比，接口里面的所有方法都是抽象方法，接口里面的所有属性都是常量。即接口里面只有方法定义而没有任何方法实现
+    
+    
+ 2. 接口的用途
+    通常用接口来定义实现类的外观，也就是实现类的行为定义，用来约束实现类的行为。接口就相当于一份契约，根据外部应用需要的功能，约定了实现类应该要实现的功能，但是具体的实现类除了实现接口约定的功能外，还可以根据需要实现其他一些功能，这是允许的，也就是说实现类的功能包含但不仅限于接口约束的功能。 
+    
+    
+
+        
+          <p class="article-more-link">
+            <a href="/2021/06/07/factory/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-offer-2" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/05/28/offer-2/">Java网络通信</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/05/28/offer-2/" class="article-date">
+  <time datetime="2021-05-28T15:16:21.000Z" itemprop="datePublished">2021-05-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java网络通信篇
+1. TCP和UDP有什么区别？TCP为什么是三次而不是两次？
+TCP Transfer Control Protocol 是一种面向连接的、可靠的、传输层协议。
+特点：好比是打电话，面向连接的，点对点的通信，高可靠的，效率比较低，占用的资源比较多。
+UDP User Datagram Protocal 是一种无连接的，不可靠的，传输层协议
+特点：好比是广播，不需要连接，发送方不管接收方有没有准备好，直接发消息；可以进行广播发送的；传输不可靠，有可能丢失消息，效率会比较高；协议就会比较简单，占用的系统资源就比较少。
+
+TCP建立连接三次握手，断开连接四次挥手。如果两次握手，
+        
+          <p class="article-more-link">
+            <a href="/2021/05/28/offer-2/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-offer-1" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/05/28/offer-1/">Java 线程与锁机制</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/05/28/offer-1/" class="article-date">
+  <time datetime="2021-05-28T15:16:08.000Z" itemprop="datePublished">2021-05-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java 线程与锁机制
+1. Java 如何开启线程
+线程与进程的区别：进程是操作系统进行资源分配的最小单元；进程是操作系统进行任务分配的最小单元，线程隶属于进程。
+
+开启线程的四种方式：
+
+ * 继承Thread类，重写run方法； 
+ * 实现Runnable接口，实现run方法；
+ * 实现Callable接口，实现Call方法；
+ * 通过线程池开启线程。
+
+线程安全是指什么：多线程情况下，调用同一个对象都能得到正确的返回结果，即线程安全。
+怎样保证线程安全：加锁：1. JVM提供的锁，即Syncchronized关键字； 2. JDK提供的各种锁Lock
+
+ 1. 继承Thread类
+        
+          <p class="article-more-link">
+            <a href="/2021/05/28/offer-1/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
     <article id="post-jdk-dynamic-proxy" class="article global-container article-type-post" itemscope itemprop="blogPost">
   
     <header class="article-header">
@@ -380,269 +657,6 @@ spring要负责的工作很多,那么多对象的创建管理都是它在负责,
 </article>
 
   
-    <article id="post-java-lamada3" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/03/20/java-lamada3/">JDK1.8新特性--Lamada表达式（三）</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2021/03/20/java-lamada3/" class="article-date">
-  <time datetime="2021-03-20T10:44:39.000Z" itemprop="datePublished">2021-03-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        JDK1.8新特性–Lamada表达式（三）
-1. 前言
-注意:Lambda表达式只支持函数式接口 也就是 只有一个抽象方法的接口，如果我们没使用一个Lambda表达式都要自己创建一个接口，这样很造成很大的不便。于是java8的工程师们已经帮我们把常用的函数式接口都帮我们定义好，拿来直接使用即可。如果不能满足你的需求，那么这时你才需要自己定义函数式接口。
-@FunctionalInterfac e: 检验接口是否是函数式接口
-
-− Lambda 允许把函数作为一个方法的参数（函数作为参数传递到方法中
-java8 内置的四大核心函数式接口
-Consumer 消费型接口
-void accept(T
-        
-          <p class="article-more-link">
-            <a href="/2021/03/20/java-lamada3/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
-    <article id="post-java-lamada2" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/03/20/java-lamada2/">JDK1.8新特性--Lamada表达式（二）</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2021/03/20/java-lamada2/" class="article-date">
-  <time datetime="2021-03-20T10:44:34.000Z" itemprop="datePublished">2021-03-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        JDK1.8新特性–Lamada表达式（二）
-前言
-Lamada操作符 ->
-
-左侧：Lamada表达式的参数列表
-右侧：Lamada表达式所要实现的功能
-Lamada表达式需要函数式接口的支持
-一、
-1: 无参数，无返回值
-2: 有一个参数，无返回值
-3: 若只有一个参数，小括号可以省略不写
-4: 有两个以上的参数，有返回值，并且Lamada体中有多条语句,必须使用大括号
-5: 若有两个参数，有返回值，并且Lamada体中只有一条语句，return和大括号可以不写
-6: Lamada表达式的数据类型可以省略不写，因为JVM编译器可以通过上下文推断出数据类型，如果两个以上参数有一个写了，必须都
-        
-          <p class="article-more-link">
-            <a href="/2021/03/20/java-lamada2/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
-    <article id="post-java-lamada1" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/03/20/java-lamada1/">JDK1.8新特性--Lamada表达式（一）</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2021/03/20/java-lamada1/" class="article-date">
-  <time datetime="2021-03-20T10:44:28.000Z" itemprop="datePublished">2021-03-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        JDK1.8新特性–Lamada表达式（一）
-前言
- Lambda 是一个匿名函数，我们可以把 Lambda表达式理解为是一段可以传递的代码（将代码像数据一样进行传递）。可以写出更简洁、更灵活的代码。作为一种更紧凑的代码风格，使Java的语言表达能力得到了提升。
-Lambda表达式语法：Lambda表达式在Java 语言中引入了一个新的语法元素和操作符。这个操作符为 “->” ， 该操作符被称为 Lambda 操作符或剪头操作符。它将 Lambda 分为 两个部分：
-左侧： 指定了 Lambda 表达式需要的所有参数
-右侧： 指定了 Lambda 体，即 Lambda 表达式要执行的功能。
-以
-        
-          <p class="article-more-link">
-            <a href="/2021/03/20/java-lamada1/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
-    <article id="post-concurrent-lock" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/03/06/concurrent-lock/">java 添加二级缓存并实现并发锁</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2021/03/06/concurrent-lock/" class="article-date">
-  <time datetime="2021-03-05T16:31:13.000Z" itemprop="datePublished">2021-03-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        java 添加二级缓存并实现并发锁
-1. 前言
-需求：高并发场景下，使用redis作为我们提供对外服务接口的数据读写已经是主流，但大量的流量打进来的时候，有时候直接读取redis，并将redis的数据进行组装返回给服务的上游调用方，仍会给服务带来不小的压力，目前有一种方案，我们可以将组装好的数据，作为前置缓存存储至redis中，来作为二级缓存使用，这可以大大提升我们接口的服务质量，那么我们在控制二级缓存的时候，便可以设置二级缓存的生效时间为5分钟（当然这里不能都是5分钟，要给个合理的随机数,比如3-10分钟，避免缓存雪崩），并且控制二级缓存的写，这里我们可以使用另外的一个空key，来作为二级缓
-        
-          <p class="article-more-link">
-            <a href="/2021/03/06/concurrent-lock/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
-    <article id="post-enum-senior" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/03/05/enum-senior/">java 枚举类高级使用</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2021/03/05/enum-senior/" class="article-date">
-  <time datetime="2021-03-05T15:46:48.000Z" itemprop="datePublished">2021-03-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        java 枚举类高级使用
-前言
-枚举是一种规范它规范了参数的形式，这样就可以不用考虑类型的不匹配并且显式的替代了int型参数可能带来的模糊概念 枚举像一个类，又像一个数组。Enum作为Sun全新引进的一个关键字，看起来很象是特殊的class, 它也可以有自己的变量，可以定义自己的方法，可以实现一个或者多个接口。 在涉及到使用大量需要标记的内容的时候,我们一般选择使用枚举类型来快速定义内容,但是不仅仅是因为快速,同时使用枚举类型更加的安全。下面先看两个典型的枚举类的例子：
-public enum Direction{EAST,SOUTH,WEST,NORTH};
-public enum Posi
-        
-          <p class="article-more-link">
-            <a href="/2021/03/05/enum-senior/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
 
 
   <nav id="page-nav">
@@ -684,7 +698,7 @@ public enum Posi
   <div class="widget-box">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a>
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
     </div>
   </div>
 
@@ -693,7 +707,7 @@ public enum Posi
   <div class="widget-box">
     <h3 class="widget-title">时光轴</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
     </div>
   </div>
 
@@ -705,23 +719,23 @@ public enum Posi
       <ul>
         
           <li>
-            <a href="/2021/04/20/jdk-dynamic-proxy/">java jdk动态代理</a>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
           </li>
         
           <li>
-            <a href="/2021/04/20/self-param-anno/">java 自定义参数解析器</a>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
           </li>
         
           <li>
-            <a href="/2021/04/10/spring-base/">spring应用上下文</a>
+            <a href="/2021/06/07/factory/">Java 工厂模式</a>
           </li>
         
           <li>
-            <a href="/2021/04/06/self-thread/">java 自定义实现线程池</a>
+            <a href="/2021/05/28/offer-2/">Java网络通信</a>
           </li>
         
           <li>
-            <a href="/2021/03/20/threadpool/">java 线程池获取返回值</a>
+            <a href="/2021/05/28/offer-1/">Java 线程与锁机制</a>
           </li>
         
       </ul>
