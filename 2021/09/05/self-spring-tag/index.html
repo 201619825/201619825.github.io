@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>java 自定义spring标签 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Java 自定义spring标签 前言 自定义标签可以说是spring提供的最大、最强的Hook（钩子），通俗的讲就是给后续小伙伴开发组件，提供一个标准公共可拔插”接口”，大家可以理解为手机充电器的工业标准口，为了方便各个充电器生产厂家生产，而制定的标准。 既然说自定义标签如此强大，我们在哪里应用的呢? 我们知道spring发展越来越强大，但核心的组件只有spring-core和spring-be">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java 自定义spring标签">
+<meta property="og:url" content="https://201619825.github.io/2021/09/05/self-spring-tag/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="Java 自定义spring标签 前言 自定义标签可以说是spring提供的最大、最强的Hook（钩子），通俗的讲就是给后续小伙伴开发组件，提供一个标准公共可拔插”接口”，大家可以理解为手机充电器的工业标准口，为了方便各个充电器生产厂家生产，而制定的标准。 既然说自定义标签如此强大，我们在哪里应用的呢? 我们知道spring发展越来越强大，但核心的组件只有spring-core和spring-be">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210906172013.png">
+<meta property="article:published_time" content="2021-09-05T09:01:27.000Z">
+<meta property="article:modified_time" content="2021-09-06T09:26:12.223Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210906172013.png">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-self-spring-tag" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      java 自定义spring标签
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/09/05/self-spring-tag/" class="article-date">
+  <time datetime="2021-09-05T09:01:27.000Z" itemprop="datePublished">2021-09-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/" rel="tag">spring</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="Java-自定义spring标签"><a href="#Java-自定义spring标签" class="headerlink" title="Java 自定义spring标签"></a>Java 自定义spring标签</h1></blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>自定义标签可以说是spring提供的最大、最强的Hook（钩子），通俗的讲就是给后续小伙伴开发组件，提供一个标准公共可拔插”接口”，大家可以理解为手机充电器的工业标准口，为了方便各个充电器生产厂家生产，而制定的标准。<br>既然说自定义标签如此强大，我们在哪里应用的呢? 我们知道spring发展越来越强大，但核心的组件只有spring-core和spring-beans，那么有些人会问我们经常用的context，aop，tx不是吗？对的，这些都是在核心上做的扩展，而这些扩展恰恰是通过自定义标签实现扩展的，还有一些公共开源组件amq，redis，dubbo等等，他们都利用了自定义标签来扩展，使得spring容器的功能越发强大。</p>
+<p>既然自定义标签用途那么广，那么如何使用自定义标签呢?这里我将带领大家感受下自定义标签的使用。需要的文件（按照spring加载、解析的顺序）有以下五个基本文件：<br>①spring.schemas<br>②XSD文件<br>③spring.handlers<br>④NamespaceHandler<br>⑤BeanDefinitionParser<br>⑥最后引入到配置文件中使用。</p>
+<h2 id="1-创建一个maven项目"><a href="#1-创建一个maven项目" class="headerlink" title="1. 创建一个maven项目"></a>1. 创建一个maven项目</h2><p>目录结构如图：<br><img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210906172013.png"> </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project xmlns&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0&quot;</span><br><span class="line">         xmlns:xsi&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema-instance&quot;</span><br><span class="line">         xsi:schemaLocation&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0 http:&#x2F;&#x2F;maven.apache.org&#x2F;xsd&#x2F;maven-4.0.0.xsd&quot;&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line"></span><br><span class="line">    &lt;groupId&gt;com.jdd.o2o.cms.es.plus&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;cms-es-plus&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0.0-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line"></span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;spring.version&gt;5.2.7.RELEASE&lt;&#x2F;spring.version&gt;</span><br><span class="line">    &lt;&#x2F;properties&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-context-support&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;spring.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">            &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-test&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;spring.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">            &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-context&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;spring.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">            &lt;scope&gt;provided&lt;&#x2F;scope&gt; &lt;!--打包时改为provided，本地测试时改为complier--&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;&#x2F;dependencies&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="2-编写映射类"><a href="#2-编写映射类" class="headerlink" title="2. 编写映射类"></a>2. 编写映射类</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class EsPlusEntity &#123;</span><br><span class="line">    private String userName;</span><br><span class="line"></span><br><span class="line">    private String hostName;</span><br><span class="line"></span><br><span class="line">    public String getUserName() &#123;</span><br><span class="line">        return userName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setUserName(String userName) &#123;</span><br><span class="line">        this.userName &#x3D; userName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getHostName() &#123;</span><br><span class="line">        return hostName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setHostName(String hostName) &#123;</span><br><span class="line">        this.hostName &#x3D; hostName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="3-编写xsd"><a href="#3-编写xsd" class="headerlink" title="3. 编写xsd"></a>3. 编写xsd</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot; ?&gt;</span><br><span class="line">&lt;schema xmlns&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema&quot;</span><br><span class="line">        targetNamespace&#x3D;&quot;http:&#x2F;&#x2F;www.jyx.com&#x2F;schema&#x2F;EsPlusEntity&quot;</span><br><span class="line">        elementFormDefault&#x3D;&quot;qualified&quot;&gt;</span><br><span class="line"></span><br><span class="line">&lt;element name&#x3D;&quot;esPlus&quot;&gt;</span><br><span class="line">    &lt;complexType&gt;</span><br><span class="line">        &lt;attribute name&#x3D;&quot;id&quot; type&#x3D;&quot;string&quot;&#x2F;&gt;</span><br><span class="line">        &lt;attribute name&#x3D;&quot;userName&quot; type&#x3D;&quot;string&quot;&#x2F;&gt;</span><br><span class="line">        &lt;attribute name&#x3D;&quot;hostName&quot; type&#x3D;&quot;string&quot;&#x2F;&gt;</span><br><span class="line">    &lt;&#x2F;complexType&gt;</span><br><span class="line">&lt;&#x2F;element&gt;</span><br><span class="line">&lt;&#x2F;schema&gt;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="4-创建spring-handlers文件"><a href="#4-创建spring-handlers文件" class="headerlink" title="4. 创建spring.handlers文件"></a>4. 创建spring.handlers文件</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http\:&#x2F;&#x2F;www.jyx.com&#x2F;schema&#x2F;EsPlusEntity&#x3D;com.jd.o2o.cms.es.plus.parser.EsPlusEntityNameSpaceHandler</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="5-创建spring-schemas文件"><a href="#5-创建spring-schemas文件" class="headerlink" title="5. 创建spring.schemas文件"></a>5. 创建spring.schemas文件</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http\:&#x2F;&#x2F;www.jyx.com&#x2F;schema&#x2F;EsPlusEntity-1.0.xsd&#x3D;META-INF&#x2F;spring-esplus.xsd</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="6-编写命名空间注入容器"><a href="#6-编写命名空间注入容器" class="headerlink" title="6. 编写命名空间注入容器"></a>6. 编写命名空间注入容器</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class EsPlusEntityNameSpaceHandler extends NamespaceHandlerSupport &#123;</span><br><span class="line"></span><br><span class="line">    public void init() &#123;</span><br><span class="line">        registerBeanDefinitionParser(&quot;esPlus&quot;,new EsPlusEntityBeanDefinitionParser());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class EsPlusEntityBeanDefinitionParser extends AbstractSingleBeanDefinitionParser &#123;</span><br><span class="line">    @Override</span><br><span class="line">    protected Class getBeanClass(Element element) &#123;</span><br><span class="line">        return EsPlusEntity.class;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void doParse(Element element, BeanDefinitionBuilder builder) &#123;</span><br><span class="line">        String name &#x3D; element.getAttribute(&quot;userName&quot;);</span><br><span class="line">        String address &#x3D; element.getAttribute(&quot;hostName&quot;);</span><br><span class="line"></span><br><span class="line">        if (StringUtils.hasText(name)) &#123;</span><br><span class="line">            builder.addPropertyValue(&quot;userName&quot;, name);</span><br><span class="line">        &#125;</span><br><span class="line">        if (StringUtils.hasText(address)) &#123;</span><br><span class="line">            builder.addPropertyValue(&quot;hostName&quot;, address);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="7-编写测试类"><a href="#7-编写测试类" class="headerlink" title="7. 编写测试类"></a>7. 编写测试类</h2><ol>
+<li><p>创建spring配置文件，将自定义标签写入</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns&#x3D;&quot;http:&#x2F;&#x2F;www.springframework.org&#x2F;schema&#x2F;beans&quot;</span><br><span class="line">       xmlns:xsi&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema-instance&quot;</span><br><span class="line">       xmlns:cmsEsPlus&#x3D;&quot;http:&#x2F;&#x2F;www.jyx.com&#x2F;schema&#x2F;EsPlusEntity&quot;</span><br><span class="line">       xsi:schemaLocation&#x3D;&quot;http:&#x2F;&#x2F;www.springframework.org&#x2F;schema&#x2F;beans</span><br><span class="line">           http:&#x2F;&#x2F;www.springframework.org&#x2F;schema&#x2F;beans&#x2F;spring-beans-3.1.xsd</span><br><span class="line">           http:&#x2F;&#x2F;www.jyx.com&#x2F;schema&#x2F;EsPlusEntity</span><br><span class="line">           http:&#x2F;&#x2F;www.jyx.com&#x2F;schema&#x2F;EsPlusEntity-1.0.xsd&quot;</span><br><span class="line">       default-autowire&#x3D;&quot;byName&quot;&gt;</span><br><span class="line"></span><br><span class="line">    &lt;cmsEsPlus:esPlus id &#x3D; &quot;testEsPlus&quot; userName&#x3D;&quot;test&quot; hostName&#x3D;&quot;test&quot; &#x2F;&gt;</span><br><span class="line">&lt;&#x2F;beans&gt;</span><br></pre></td></tr></table></figure></div>
+</li>
+<li><p>编写测试类</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class EsPlusTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        ApplicationContext applicationContext &#x3D; new ClassPathXmlApplicationContext(&quot;classpath*:spring&#x2F;spring-config-esplus.xml&quot;);</span><br><span class="line">        EsPlusEntity esPlusEntity &#x3D; (EsPlusEntity)applicationContext.getBean(&quot;testEsPlus&quot;);</span><br><span class="line">        System.out.println(esPlusEntity.getUserName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>将项目执行 maven install ，另外一个项目引入此jar包即可使用 </p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2021/10/23/java-spi/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Java SPI 应用
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2021/08/30/static-inner-class/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">静态内部类</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java 线程与锁机制 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Java 线程与锁机制 1. Java 如何开启线程 线程与进程的区别：进程是操作系统进行资源分配的最小单元；进程是操作系统进行任务分配的最小单元，线程隶属于进程。  开启线程的四种方式：   * 继承Thread类，重写run方法；   * 实现Runnable接口，实现run方法；  * 实现Callable接口，实现Call方法；  * 通过线程池开启线程。  线程安全是指什么：多线程情况下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 线程与锁机制">
+<meta property="og:url" content="https://201619825.github.io/2021/05/28/offer-1/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="Java 线程与锁机制 1. Java 如何开启线程 线程与进程的区别：进程是操作系统进行资源分配的最小单元；进程是操作系统进行任务分配的最小单元，线程隶属于进程。  开启线程的四种方式：   * 继承Thread类，重写run方法；   * 实现Runnable接口，实现run方法；  * 实现Callable接口，实现Call方法；  * 通过线程池开启线程。  线程安全是指什么：多线程情况下">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210528/21052801.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210528/20210528235346.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210530/20210530183233.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210530/20210530194937.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210530/20210530201457.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210530/20210530202103.png">
+<meta property="article:published_time" content="2021-05-28T15:16:08.000Z">
+<meta property="article:modified_time" content="2021-06-10T12:26:30.542Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210528/21052801.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-offer-1" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Java 线程与锁机制
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/05/28/offer-1/" class="article-date">
+  <time datetime="2021-05-28T15:16:08.000Z" itemprop="datePublished">2021-05-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="Java-线程与锁机制"><a href="#Java-线程与锁机制" class="headerlink" title="Java 线程与锁机制"></a>Java 线程与锁机制</h1></blockquote>
+<h2 id="1-Java-如何开启线程"><a href="#1-Java-如何开启线程" class="headerlink" title="1. Java 如何开启线程"></a>1. Java 如何开启线程</h2><p>线程与进程的区别：进程是操作系统进行资源分配的最小单元；进程是操作系统进行任务分配的最小单元，线程隶属于进程。</p>
+<p>开启线程的四种方式：</p>
+<ul>
+<li>继承Thread类，重写run方法； </li>
+<li>实现Runnable接口，实现run方法；</li>
+<li>实现Callable接口，实现Call方法；</li>
+<li>通过线程池开启线程。</li>
+</ul>
+<p>线程安全是指什么：多线程情况下，调用同一个对象都能得到正确的返回结果，即线程安全。<br>怎样保证线程安全：加锁：1. JVM提供的锁，即Syncchronized关键字； 2. JDK提供的各种锁Lock</p>
+<ol>
+<li>继承Thread类，重写run方法<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">  public class ThreadTest extends Thread&#123;</span><br><span class="line"></span><br><span class="line">    public void run()&#123;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; 10; i ++)&#123;</span><br><span class="line">            System.out.println(Thread.currentThread()+&quot;:run:&quot;+i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        ThreadTest threadTest &#x3D;  new ThreadTest();</span><br><span class="line">        threadTest.start();</span><br><span class="line"></span><br><span class="line">        ThreadTest threadTest1 &#x3D;  new ThreadTest();</span><br><span class="line">        threadTest1.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<ol start="2">
+<li>实现Runnable接口，实现run方法<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class ThreadRunnable implements Runnable&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run()&#123;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; 10; i ++)&#123;</span><br><span class="line">            System.out.println(Thread.currentThread()+&quot;:run:&quot;+i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Thread thread &#x3D; new Thread(new ThreadRunnable());</span><br><span class="line">        thread.start();</span><br><span class="line"></span><br><span class="line">        Thread thread1 &#x3D; new Thread(new ThreadRunnable());</span><br><span class="line">        thread1.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="2-Volatile和Syncchronized有什么区别？Volatile能不能保证线程安全？双重可检验锁单例为什么要加Volatile？"><a href="#2-Volatile和Syncchronized有什么区别？Volatile能不能保证线程安全？双重可检验锁单例为什么要加Volatile？" class="headerlink" title="2. Volatile和Syncchronized有什么区别？Volatile能不能保证线程安全？双重可检验锁单例为什么要加Volatile？"></a>2. Volatile和Syncchronized有什么区别？Volatile能不能保证线程安全？双重可检验锁单例为什么要加Volatile？</h2><ul>
+<li>Syncchronized关键字用来加锁，Volatile只是用来保证变量的可见性。通常适用于一个线程写，多个线程读的场景；</li>
+<li>不能，Volatile只是保证线程可见性，并不保证原子性；</li>
+<li>Volatile防止指令重排，在双重可检验锁机制中，防止高并发场景下造成的线程安全问题。</li>
+</ul>
+<ol>
+<li><p>不加Volatile关键字，可以看到子线程感知不到flag值变化，一直在执行while语句，等不到子线程的输出语句</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class VolatileDemo1 &#123;</span><br><span class="line">    public static boolean flag &#x3D; true;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            while(flag)&#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(&quot;等待子线程while结束&quot;);</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Thread.sleep(1000);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;将flag改为false&quot;);</span><br><span class="line">        flag &#x3D; false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>输出：可以看出线程一直没有释放</p>
+<img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210528/21052801.jpg">
+</li>
+<li><p>加上Volatile关键字</p>
+</li>
+</ol>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class VolatileDemo2 &#123;</span><br><span class="line">    public static volatile boolean flag &#x3D; true;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            while(flag)&#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(&quot;等待子线程while结束&quot;);</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Thread.sleep(1000);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;将flag改为false&quot;);</span><br><span class="line">        flag &#x3D; false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>  输出：感知到flag变化，线程while终止<br><img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210528/20210528235346.png"></p>
+<h2 id="3-Java线程锁机制是怎样的？偏向锁、轻量级锁、重量级锁有什么区别？锁机制是如何升级的？"><a href="#3-Java线程锁机制是怎样的？偏向锁、轻量级锁、重量级锁有什么区别？锁机制是如何升级的？" class="headerlink" title="3. Java线程锁机制是怎样的？偏向锁、轻量级锁、重量级锁有什么区别？锁机制是如何升级的？"></a>3. Java线程锁机制是怎样的？偏向锁、轻量级锁、重量级锁有什么区别？锁机制是如何升级的？</h2><ul>
+<li>Java中的锁就是在对象的MarkWord中记录一个锁状态。无锁，偏向锁，轻量级锁，重量级锁对应不同的锁状态。</li>
+<li>Java的锁机制就是根据资源竞争的激烈程度不断进行锁升级的过程。</li>
+<li>根据资源竞争的激烈程度，来进行锁的升级。</li>
+</ul>
+<pre><code>- 偏向锁：相当于一个对象中留了个门牌，表示请大家（即线程）有序访问，想要后续访问对象中的资源需要排队，像是在门卫中登记下，登记成功后才可访问资源；但这时候还没有上锁，只是告诉大家，我已经登记过了，正在访问资源。
+- 轻量级锁：随着后面排队的人越来越多，看到已经有人在门卫处登记了，只有等上一位出来，才可有下一位登记进去访问资源，所以大家会不断自旋（即不断尝试获取登记），等上一位出来后，便进去登记占有门牌标识，然后访问资源，所以轻量级锁也叫做“自旋锁”。
+- 重量级锁： 当有很多的人排队时，大家都在自旋尝试获有门牌标识，那么便是对cpu的一种浪费，当竞争过于激烈的时候，Jvm便会上报给操作系统，由操作系统霸道进行排队，等操作系统通知（每一步是操作系统来执行，cpu效率会降低）。轻量级锁，不断自旋，提高获取锁的效率。</code></pre><ol>
+<li><p>synchronized关键字deomo</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class SyncTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Object o &#x3D; new Object();</span><br><span class="line">        &#x2F;&#x2F; 打印内存布局</span><br><span class="line">        &#x2F;&#x2F; &lt;groupId&gt;org.openjdk.jol&lt;&#x2F;groupId&gt;</span><br><span class="line">        &#x2F;&#x2F; &lt;artifactId&gt;jol-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">        System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line"></span><br><span class="line">        synchronized (o)&#123;</span><br><span class="line">            System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>输出：<br>&lt;img src=”//cdn.jsdelivr.net/gh/201619825/cdn/20210529/20210529115341.png&gt;</p>
+<p>MarkWord信息：</p>
+<img scr="//cdn.jsdelivr.net/gh/201619825/cdn/20210529/20210529121633.png">
+
+</li>
+</ol>
+<h2 id="4-谈谈你对AQS的理解？AQS如何实现可重入锁？"><a href="#4-谈谈你对AQS的理解？AQS如何实现可重入锁？" class="headerlink" title="4. 谈谈你对AQS的理解？AQS如何实现可重入锁？"></a>4. 谈谈你对AQS的理解？AQS如何实现可重入锁？</h2><ul>
+<li>AQS是一个Java线程的同步框架，是JDK中很多锁工具的核心实现（阅读源码）</li>
+<li>在AQS中，维护了一个信号量state和一个线程组成的双向链表队列。其中，这个线程队列，就是用来给线程排队的，而state就像是一个红绿灯，用于控制线程排队或放行的，在不同的场景下，有不同的意义。</li>
+<li>在可重入锁这个场景下，state就是表示加锁的次数，0表示无锁，每加一次锁，state就加1，有释放锁就减1。</li>
+</ul>
+<ol>
+<li>ReentranLock demo<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class LockDemo &#123;</span><br><span class="line">    static ReentrantLock lock &#x3D; new ReentrantLock();</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Thread t1 &#x3D; new Thread(() -&gt; &#123;</span><br><span class="line">            lock.lock();</span><br><span class="line">            lock.lock(); &#x2F;&#x2F;可重入锁的概念就是，我上面已经锁了一次了，那么我还可以再锁，那么下面就要释放两次锁</span><br><span class="line">            try &#123;</span><br><span class="line">                System.out.println(&quot;t1 started&quot;);</span><br><span class="line">                Thread.sleep(5000);</span><br><span class="line">                System.out.println(&quot;t1 completed&quot;);</span><br><span class="line">            &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;finally &#123;</span><br><span class="line">                lock.unlock();</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        Thread t2 &#x3D; new Thread(() -&gt; &#123;</span><br><span class="line">            System.out.println(&quot;t2 started&quot;);</span><br><span class="line">            while(lock.isLocked())&#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(&quot;t2 completed&quot;);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        t2.start();</span><br><span class="line">        t1.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+输出：无论t2先执行，执行了多长时间，完成一定是t1先完成<img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210530/20210530183233.png">
+
+</li>
+</ol>
+<h2 id="5-有A、B、C三个线程，如何保证三个线程同时执行？如何在并发情况下保证三个线程依次执行？如何保证三个线程有序交错进行？"><a href="#5-有A、B、C三个线程，如何保证三个线程同时执行？如何在并发情况下保证三个线程依次执行？如何保证三个线程有序交错进行？" class="headerlink" title="5. 有A、B、C三个线程，如何保证三个线程同时执行？如何在并发情况下保证三个线程依次执行？如何保证三个线程有序交错进行？"></a>5. 有A、B、C三个线程，如何保证三个线程同时执行？如何在并发情况下保证三个线程依次执行？如何保证三个线程有序交错进行？</h2><p>CountDownLatch、CylicBarrier、Semaphore</p>
+<ul>
+<li>CountDownLatch如同田径运动员，都在起跑线排队，排好队后一起出发</li>
+<li>CylicBarrier</li>
+</ul>
+<ol>
+<li><p>CountDownLatch demo 三个线程同时执行</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public class CountDownLatchDemo &#123;</span><br><span class="line">    public int count &#x3D; 0;</span><br><span class="line"></span><br><span class="line">    public void add()&#123;</span><br><span class="line">        count ++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line">        int size &#x3D; 3;</span><br><span class="line">        CountDownLatchDemo countDownLatchDemo &#x3D; new CountDownLatchDemo();</span><br><span class="line"></span><br><span class="line">        CountDownLatch countDownLatch &#x3D; new CountDownLatch(1);</span><br><span class="line"></span><br><span class="line">        for (int i &#x3D; 0; i &lt; size; i ++)&#123;</span><br><span class="line">            new Thread(() -&gt; &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    countDownLatch.await();</span><br><span class="line">                    System.out.println(System.currentTimeMillis()); &#x2F;&#x2F;打印线程到达的时间</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Thread.sleep(100);</span><br><span class="line">        countDownLatch.countDown();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>输出：</p>
+<img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210530/20210530194937.png">
+</li>
+<li><p>CylicBarrier demo 三个线程依次执行</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">package com.jyx.test.demo.currentdemo;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class CylicBarrierDemo &#123;</span><br><span class="line">    static volatile int ticket &#x3D; 1;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        Thread t1 &#x3D; new Thread(() -&gt; &#123;</span><br><span class="line">            while(true)&#123;</span><br><span class="line">                if (ticket &#x3D;&#x3D; 1)&#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        Thread.sleep(100);</span><br><span class="line">                        for (int i &#x3D; 0; i &lt; 10; i ++)&#123;</span><br><span class="line">                            System.out.println(&quot;a&quot;+i);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                    ticket &#x3D; 2;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        Thread t2 &#x3D; new Thread(() -&gt; &#123;</span><br><span class="line">            while(true)&#123;</span><br><span class="line">                if (ticket &#x3D;&#x3D; 2)&#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        Thread.sleep(100);</span><br><span class="line">                        for (int i &#x3D; 0; i &lt; 10; i ++)&#123;</span><br><span class="line">                            System.out.println(&quot;b&quot;+i);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                    ticket &#x3D; 3;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        Thread t3 &#x3D; new Thread(() -&gt; &#123;</span><br><span class="line">            while(true)&#123;</span><br><span class="line">                if (ticket &#x3D;&#x3D; 3)&#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        Thread.sleep(100);</span><br><span class="line">                        for (int i &#x3D; 0; i &lt; 10; i ++)&#123;</span><br><span class="line">                            System.out.println(&quot;c&quot;+i);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                    ticket &#x3D; 1;</span><br><span class="line">                    return;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">        t3.start();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>输出：</p>
+<img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210530/20210530201457.png">
+</li>
+<li><p>Semaphore</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">public class SemaphoreDemo &#123;</span><br><span class="line">    &#x2F;&#x2F;利用信号量来控制</span><br><span class="line">    private static Semaphore s1 &#x3D; new Semaphore(1);</span><br><span class="line">    private static Semaphore s2 &#x3D; new Semaphore(1);</span><br><span class="line">    private static Semaphore s3 &#x3D; new Semaphore(1);</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            &#x2F;&#x2F;首先调用s2为acquire状态</span><br><span class="line">            s1.acquire();</span><br><span class="line">            s2.acquire();</span><br><span class="line">            &#x2F;&#x2F;s3.acquire();</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            while(true)&#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    s1.acquire();</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                try &#123;</span><br><span class="line">                    Thread.sleep(500);</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                System.out.println(&quot;A&quot;);</span><br><span class="line">                s2.release();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            while(true)&#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    s2.acquire();</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                try &#123;</span><br><span class="line">                    Thread.sleep(500);</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                System.out.println(&quot;B&quot;);</span><br><span class="line">                s3.release();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        new Thread(() -&gt; &#123;</span><br><span class="line">            while(true)&#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    s3.acquire();</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                try &#123;</span><br><span class="line">                    Thread.sleep(500);</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                System.out.println(&quot;C&quot;);</span><br><span class="line">                s1.release();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>输出：线程有序交错执行</p>
+<img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210530/20210530202103.png">
+
+</li>
+</ol>
+<h2 id="6-如何对一个字符串快速进行排序"><a href="#6-如何对一个字符串快速进行排序" class="headerlink" title="6. 如何对一个字符串快速进行排序"></a>6. 如何对一个字符串快速进行排序</h2><p>放在并发篇下，思考的就要是Fork、Join框架，分治思想。</p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2021/05/28/offer-2/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Java网络通信
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2021/04/20/jdk-dynamic-proxy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">java jdk动态代理</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java事务失效场景及自定义注解实现事务 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Java事务失效场景及自定义注解实现事务 前言. 事务失效场景 1、spring的事务注解@Transactional只能放在public修饰的方法上才起作用，如果放在其他非public（private，protected）方法上，虽然不报错，但是事务不起作用  2、如果采用spring+spring mvc，则context:component-scan重复扫描问题可能会引起事务失败。 如果sp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java事务失效场景及自定义注解实现事务">
+<meta property="og:url" content="https://201619825.github.io/2020/11/28/anno-transaction/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="Java事务失效场景及自定义注解实现事务 前言. 事务失效场景 1、spring的事务注解@Transactional只能放在public修饰的方法上才起作用，如果放在其他非public（private，protected）方法上，虽然不报错，但是事务不起作用  2、如果采用spring+spring mvc，则context:component-scan重复扫描问题可能会引起事务失败。 如果sp">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-28T14:18:54.000Z">
+<meta property="article:modified_time" content="2021-08-28T07:01:40.200Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-anno-transaction" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Java事务失效场景及自定义注解实现事务
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/11/28/anno-transaction/" class="article-date">
+  <time datetime="2020-11-28T14:18:54.000Z" itemprop="datePublished">2020-11-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="Java事务失效场景及自定义注解实现事务"><a href="#Java事务失效场景及自定义注解实现事务" class="headerlink" title="Java事务失效场景及自定义注解实现事务"></a>Java事务失效场景及自定义注解实现事务</h1></blockquote>
+<h2 id="前言-事务失效场景"><a href="#前言-事务失效场景" class="headerlink" title="前言. 事务失效场景"></a>前言. 事务失效场景</h2><p>1、spring的事务注解@Transactional只能放在public修饰的方法上才起作用，如果放在其他非public（private，protected）方法上，虽然不报错，但是事务不起作用</p>
+<p>2、如果采用spring+spring mvc，则context:component-scan重复扫描问题可能会引起事务失败。<br>       如果spring和mvc的配置文件中都扫描了service层，那么事务就会失效。<br>       原因：因为按照spring配置文件的加载顺序来讲，先加载springmvc配置文件，再加载spring配置文件，我们的事物一般都在srping配置文件中进行配置，如果此时在加载srpingMVC配置文件的时候，把servlce也给注册了，但是此时事物还没加载，也就导致后面的事物无法成功注入到service中。所以把对service的扫描放在spring配置文件中或是其他配置文件中。</p>
+<p>3、如使用mysql且引擎是MyISAM，则事务会不起作用，原因是MyISAM不支持事务，可以改成InnoDB引擎</p>
+<p>4、 @Transactional 注解开启配置，必须放到listener里加载，如果放到DispatcherServlet的配置里，事务也是不起作用的。<br>    如果spring和mvc的配置文件中都扫描了service层，那么事务就会失效。<br>        原因：因为按照spring配置文件的加载顺序来讲，先加载springmvc配置文件，再加载spring配置文件，我们的事物一般都在srping配置文件中进行配置，如果此时在加载srpingMVC配置文件的时候，把servlce也给注册了，但是此时事物还没加载，也就导致后面的事物无法成功注入到service中。所以把对service的扫描放在spring配置文件中或是其他配置文件中。<br>5、在业务代码中如果抛出RuntimeException异常，事务回滚；但是抛出Exception，事务不回滚；</p>
+<p>6、如果在加有事务的方法内，使用了try…catch..语句块对异常进行了捕获，而catch语句块没有throw new RuntimeExecption异常，事务也不会回滚。</p>
+<h2 id="1-编写事务封装工具类"><a href="#1-编写事务封装工具类" class="headerlink" title="1. 编写事务封装工具类"></a>1. 编写事务封装工具类</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class TransactionalUtils &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private DataSourceTransactionManager dataSourceTransactionManager;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 开启事务</span><br><span class="line">     * new DefaultTransactionAttribute() 指使用默认的传播行为</span><br><span class="line">     * AOP 七种传播行为</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public TransactionStatus begin()&#123;</span><br><span class="line">        TransactionStatus transaction &#x3D; dataSourceTransactionManager.</span><br><span class="line">                getTransaction(new DefaultTransactionAttribute());</span><br><span class="line">        return transaction;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 提交事务</span><br><span class="line">     * @param transaction</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void commit(TransactionStatus transaction)&#123;</span><br><span class="line">        dataSourceTransactionManager.commit(transaction);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 回滚事务</span><br><span class="line">     * @param transaction</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void rollback(TransactionStatus transaction)&#123;</span><br><span class="line">        dataSourceTransactionManager.rollback(transaction);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="2-编写事务自定义注解"><a href="#2-编写事务自定义注解" class="headerlink" title="2. 编写事务自定义注解"></a>2. 编写事务自定义注解</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Target(&#123;ElementType.METHOD, ElementType.TYPE&#125;)</span><br><span class="line">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="line">@Inherited</span><br><span class="line">@Documented</span><br><span class="line">public @interface MyTransactional &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="3-实现目标方法的切面类"><a href="#3-实现目标方法的切面类" class="headerlink" title="3. 实现目标方法的切面类"></a>3. 实现目标方法的切面类</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 定义AOP切面拦截</span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">@Component</span><br><span class="line">@Aspect</span><br><span class="line">public class MyTransactionalAop &#123;</span><br><span class="line">    private Logger logger &#x3D; LoggerFactory.getLogger(getClass());</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private TransactionalUtils transactionalUtils;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 定义了AOP切面拦截加有@MyTransactional注解的方法</span><br><span class="line">     * @param joinPoint</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Around(value &#x3D; &quot;@annotation(testself.MyTransactional)&quot;) &#x2F;&#x2F;只要在该方法上加@MyTransactional注解，则走此AOP方法</span><br><span class="line">    public Object around(ProceedingJoinPoint joinPoint)&#123;</span><br><span class="line">        TransactionStatus status &#x3D; null;</span><br><span class="line">        try &#123;</span><br><span class="line">            &#x2F;&#x2F;目标方法</span><br><span class="line">            logger.info(&quot;&gt;&gt;&gt;&gt;开启事务&quot;);</span><br><span class="line">            status &#x3D; transactionalUtils.begin();</span><br><span class="line">            Object proceed &#x3D; joinPoint.proceed();</span><br><span class="line">            logger.info(&quot;&gt;&gt;&gt;&gt;提交事务&quot;);</span><br><span class="line">            transactionalUtils.commit(status);</span><br><span class="line">            return proceed;</span><br><span class="line">        &#125; catch (Throwable throwable) &#123;</span><br><span class="line">            throwable.printStackTrace();</span><br><span class="line">            logger.info(&quot;&gt;&gt;&gt;&gt;回滚事务&quot;);</span><br><span class="line">            if (null !&#x3D; status)&#123;</span><br><span class="line">                transactionalUtils.rollback(status);</span><br><span class="line">            &#125;</span><br><span class="line">            return &quot;系统错误&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="4-使用自定义注解事务"><a href="#4-使用自定义注解事务" class="headerlink" title="4. 使用自定义注解事务"></a>4. 使用自定义注解事务</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Controller</span><br><span class="line">@RequestMapping(&quot;&#x2F;testself&quot;)</span><br><span class="line">public class MyTransactionalController &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private UserService userService;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(&quot;&#x2F;insert&quot;)</span><br><span class="line">    @ResponseBody</span><br><span class="line">    @MyTransactional</span><br><span class="line">    public String insertUser(UserEntity userEntity)&#123;</span><br><span class="line">        String result &#x3D; userService.insertUser(userEntity) &gt; 0 ? &quot;success&quot; : &quot;fail&quot;;</span><br><span class="line">        Long j &#x3D; 1 &#x2F; userEntity.getId();</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="5-aop常用方法"><a href="#5-aop常用方法" class="headerlink" title="5. aop常用方法"></a>5. aop常用方法</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">@Aspect</span><br><span class="line">public class CalendarAspect &#123;</span><br><span class="line"></span><br><span class="line">    @Around(value &#x3D; &quot;@annotation(com.jyx.test.demo.aop.MethodLog)&quot;)</span><br><span class="line">    public Object around(ProceedingJoinPoint joinPoint) throws Throwable &#123;</span><br><span class="line">        &#x2F;&#x2F;获取代理对象</span><br><span class="line">        Object proxy &#x3D; joinPoint.getThis();</span><br><span class="line">        System.out.println(proxy);</span><br><span class="line">        System.out.println(proxy.getClass());</span><br><span class="line">        System.out.println(joinPoint.getKind());</span><br><span class="line">        System.out.println(&quot;----------------------&quot;);</span><br><span class="line">        &#x2F;&#x2F;获取入参</span><br><span class="line">        Signature signature &#x3D; joinPoint.getSignature();</span><br><span class="line">        System.out.println(signature);</span><br><span class="line">        MethodSignature methodSignature &#x3D; (MethodSignature) signature;</span><br><span class="line">        System.out.println(JSONObject.toJSONString(methodSignature));</span><br><span class="line">        System.out.println(methodSignature.getParameterTypes());</span><br><span class="line">        &#x2F;&#x2F;获取目标对象</span><br><span class="line">        Object target &#x3D; joinPoint.getTarget();</span><br><span class="line">        System.out.println(&quot;1&quot;+target);</span><br><span class="line">        &#x2F;&#x2F;获取目标对象名称</span><br><span class="line">        String targetName &#x3D; target.getClass().getName();</span><br><span class="line">        System.out.println(&quot;2&quot;+JSONObject.toJSONString(targetName));</span><br><span class="line">        &#x2F;&#x2F;获取当前连接点名称</span><br><span class="line">        String methodName &#x3D; joinPoint.getSignature().getName();</span><br><span class="line">        System.out.println(&quot;3&quot;+JSONObject.toJSONString(methodName));</span><br><span class="line">        &#x2F;&#x2F;获取参数列表</span><br><span class="line">        Object [] args &#x3D; joinPoint.getArgs();</span><br><span class="line">        System.out.println(&quot;4&quot;+JSONObject.toJSONString(args));</span><br><span class="line"></span><br><span class="line">        Class targetClass &#x3D; Class.forName(targetName);</span><br><span class="line">        System.out.println(&quot;5&quot;+JSONObject.toJSONString(targetClass));</span><br><span class="line">        Method[] method &#x3D; targetClass.getMethods();</span><br><span class="line">        System.out.println(&quot;6&quot;+JSONObject.toJSONString(method));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;这个怎么这么low呢。</span><br><span class="line">        for (Method m : method) &#123;</span><br><span class="line">            if (m.getName().equals(methodName)) &#123;</span><br><span class="line">                Class[] tmpCs &#x3D; m.getParameterTypes();</span><br><span class="line">                if (tmpCs.length &#x3D;&#x3D; args.length) &#123;</span><br><span class="line">                    MethodLog methodCache &#x3D; m.getAnnotation(MethodLog.class);</span><br><span class="line">                    if (methodCache !&#x3D; null) &#123;</span><br><span class="line">                        System.out.println(&quot;7&quot;+JSONObject.toJSONString(methodCache));</span><br><span class="line">                        &#x2F;&#x2F;return methodCache;</span><br><span class="line">                    &#125;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object result &#x3D; joinPoint.proceed();</span><br><span class="line">        System.out.println(JSONObject.toJSONString(result));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @After(value &#x3D; &quot;@annotation(com.jyx.test.demo.aop.MethodLog)&quot;)</span><br><span class="line">    public void methodAfter(JoinPoint joinPoint) throws Throwable &#123;</span><br><span class="line">        System.out.println(&quot;After method     start.......................&quot;);</span><br><span class="line">        &#x2F;&#x2F;MethodLog remark &#x3D; getMethodRemark(joinPoint);</span><br><span class="line">        System.out.println(&quot;After method        end.......................&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="6-切面获取入参并实例化"><a href="#6-切面获取入参并实例化" class="headerlink" title="6. 切面获取入参并实例化"></a>6. 切面获取入参并实例化</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="line">@Target(&#123;ElementType.METHOD&#125;)</span><br><span class="line">@Documented</span><br><span class="line">public @interface Approvel &#123;</span><br><span class="line">    String desc() default &quot;&quot;;</span><br><span class="line"></span><br><span class="line">    ApprovelEnum[] approvelEnum() default &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 增删改的数据的类型</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Class&lt;? extends BaseObj&gt; clazz();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>切面:<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">package com.jyx.test.demo.aop;</span><br><span class="line"></span><br><span class="line">import com.alibaba.fastjson.JSONObject;</span><br><span class="line">import com.jyx.test.demo.annoBean.Approvel;</span><br><span class="line">import com.jyx.test.demo.annoBean.ApprovelObj;</span><br><span class="line">import com.jyx.test.demo.annoBean.BaseObj;</span><br><span class="line">import org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line">import org.aspectj.lang.Signature;</span><br><span class="line">import org.aspectj.lang.annotation.Around;</span><br><span class="line">import org.aspectj.lang.annotation.Aspect;</span><br><span class="line">import org.aspectj.lang.reflect.MethodSignature;</span><br><span class="line">import org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line">import java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line">@Component</span><br><span class="line">@Aspect</span><br><span class="line">public class ApprovelAspect &#123;</span><br><span class="line"></span><br><span class="line">    @Around(value &#x3D; &quot;@annotation(com.jyx.test.demo.annoBean.Approvel)&quot;)</span><br><span class="line">    public Object around(ProceedingJoinPoint joinPoint) throws IllegalAccessException, InstantiationException &#123;</span><br><span class="line">        &#x2F;&#x2F;获取切入的目标方法</span><br><span class="line">        Signature signature &#x3D; joinPoint.getSignature();</span><br><span class="line">        MethodSignature methodSignature &#x3D; (MethodSignature) signature;</span><br><span class="line">        Method targetMethod &#x3D; methodSignature.getMethod();</span><br><span class="line">        &#x2F;&#x2F;获取切入目标方法上的审批注解</span><br><span class="line">        if (targetMethod.isAnnotationPresent(Approvel.class))&#123;</span><br><span class="line">            Approvel approvel &#x3D; targetMethod.getAnnotation(Approvel.class);</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;获取注解中要处理的对象</span><br><span class="line">            Class&lt;? extends BaseObj&gt; targetObject &#x3D; approvel.clazz();</span><br><span class="line"></span><br><span class="line">            ApprovelObj approvelObj &#x3D; (ApprovelObj) targetObject.newInstance();</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;获取参数列表</span><br><span class="line">            Object [] args &#x3D; joinPoint.getArgs();</span><br><span class="line">            approvelObj &#x3D; (ApprovelObj) args[0];</span><br><span class="line">            System.out.println(JSONObject.toJSONString(approvelObj));</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F;父类</span><br><span class="line">            BaseObj baseObj &#x3D; targetObject.newInstance();</span><br><span class="line">            baseObj &#x3D; (BaseObj) args[0];</span><br><span class="line">            System.out.println(&quot;baseObj:&quot;+JSONObject.toJSONString(baseObj));</span><br><span class="line"></span><br><span class="line">            return approvelObj;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object o &#x3D; new Object();</span><br><span class="line">        o &#x3D; &quot;test&quot;;</span><br><span class="line">        return o;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class ApprovelObj extends BaseObj&#123;</span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private Integer sex;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Integer getSex() &#123;</span><br><span class="line">        return sex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setSex(Integer sex) &#123;</span><br><span class="line">        this.sex &#x3D; sex;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="7-转型及泛型边界"><a href="#7-转型及泛型边界" class="headerlink" title="7. 转型及泛型边界"></a>7. 转型及泛型边界</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">public class Apple extends Fruit&#123;</span><br><span class="line"></span><br><span class="line">    private String color;</span><br><span class="line"></span><br><span class="line">    public String getColor() &#123;</span><br><span class="line">        return color;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setColor(String color) &#123;</span><br><span class="line">        this.color &#x3D; color;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class Orange extends Fruit&#123;</span><br><span class="line"></span><br><span class="line">    private String color;</span><br><span class="line"></span><br><span class="line">    public String getColor() &#123;</span><br><span class="line">        return color;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setColor(String color) &#123;</span><br><span class="line">        this.color &#x3D; color;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Fruit &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;定义装水果的盘子</span><br><span class="line">public class Dash &lt;T extends Fruit&gt;&#123;</span><br><span class="line">    private T fruitChild;</span><br><span class="line"></span><br><span class="line">    public Dash(T fruitChild)&#123;</span><br><span class="line">        this.fruitChild &#x3D; fruitChild;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void putDash(T t)&#123;</span><br><span class="line">        this.fruitChild &#x3D; t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public T getDash()&#123;</span><br><span class="line">        return fruitChild;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Dash&lt;Apple&gt; dash &#x3D; new Dash&lt;&gt;(new Apple());</span><br><span class="line">        Apple apple &#x3D; new Apple();</span><br><span class="line">        apple.setName(&quot;苹果&quot;);</span><br><span class="line">        apple.setColor(&quot;红色&quot;);</span><br><span class="line">        dash.putDash(apple);</span><br><span class="line">        System.out.println(JSONObject.toJSONString(dash.getDash()));</span><br><span class="line">        System.out.println(&quot;-----------上边界---------------&quot;);</span><br><span class="line">        Dash&lt;? extends Fruit&gt; p &#x3D; dash;&#x2F;&#x2F;不能往里存，只能往外取</span><br><span class="line">        Fruit info &#x3D; p.getDash();&#x2F;&#x2F;读取出来的东西只能存放在Fruit或它的基类里Object</span><br><span class="line">        Apple info1 &#x3D; (Apple) info; &#x2F;&#x2F;向下转型</span><br><span class="line">        System.out.println(JSONObject.toJSONString(info1));</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;------------下边界---------------&quot;);</span><br><span class="line">        Dash&lt;? super Fruit&gt; dash1 &#x3D; new Dash&lt;&gt;(new Orange()); &#x2F;&#x2F;下界&lt;? super T&gt;不影响往里存，</span><br><span class="line">        Orange orange &#x3D; new Orange();</span><br><span class="line">        orange.setName(&quot;苹果&quot;);</span><br><span class="line">        orange.setColor(&quot;红色&quot;);</span><br><span class="line">        dash1.putDash(orange);</span><br><span class="line">        Object obj &#x3D; dash1.getDash();&#x2F;&#x2F;但往外取只能放在Object对象里</span><br><span class="line">        Orange result &#x3D; (Orange)obj;</span><br><span class="line">        System.out.println(JSONObject.toJSONString(result));</span><br><span class="line">        System.out.println(JSONObject.toJSONString(obj));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2020/12/04/mysql-lock/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            mysql锁讲解笔记
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2020/11/27/proper-static-value/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">解决@Value不能给静态变量赋值</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

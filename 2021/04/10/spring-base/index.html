@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>spring应用上下文 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="spring应用上下文 1. 容器概念 如果你想要一个手机,好这时候spring就给你一个手机.你想要使用的对象,spring就会给你,但是现在我们就会问那spring给的对象来自于哪里呢?  spring要负责的工作很多,那么多对象的创建管理都是它在负责,那肯定会有一个地方是负责造对象的.造手机的叫工厂,而spring造对象的不叫所谓的工厂,如果叫工厂有点low,所以给出一个高大尚的名称–容器.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring应用上下文">
+<meta property="og:url" content="https://201619825.github.io/2021/04/10/spring-base/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="spring应用上下文 1. 容器概念 如果你想要一个手机,好这时候spring就给你一个手机.你想要使用的对象,spring就会给你,但是现在我们就会问那spring给的对象来自于哪里呢?  spring要负责的工作很多,那么多对象的创建管理都是它在负责,那肯定会有一个地方是负责造对象的.造手机的叫工厂,而spring造对象的不叫所谓的工厂,如果叫工厂有点low,所以给出一个高大尚的名称–容器.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-10T13:28:14.000Z">
+<meta property="article:modified_time" content="2021-04-11T09:18:07.040Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-spring-base" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      spring应用上下文
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/04/10/spring-base/" class="article-date">
+  <time datetime="2021-04-10T13:28:14.000Z" itemprop="datePublished">2021-04-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="spring应用上下文"><a href="#spring应用上下文" class="headerlink" title="spring应用上下文"></a>spring应用上下文</h1></blockquote>
+<h2 id="1-容器概念"><a href="#1-容器概念" class="headerlink" title="1. 容器概念"></a>1. 容器概念</h2><p>如果你想要一个手机,好这时候spring就给你一个手机.你想要使用的对象,spring就会给你,但是现在我们就会问那spring给的对象来自于哪里呢?</p>
+<p>spring要负责的工作很多,那么多对象的创建管理都是它在负责,那肯定会有一个地方是负责造对象的.造手机的叫工厂,而spring造对象的不叫所谓的工厂,如果叫工厂有点low,所以给出一个高大尚的名称–容器.所以现在对容器这个概念有一个新的认识了吧.</p>
+<p>容器是spring框架实现的功能的核心.(spring的核心是容器,这没有错,但是容器并不唯一,框架本身提供了多个容器的实现,具体的后面会讲).因为没有对象,你无法实现你想要的任何功能.</p>
+<p>如果认为造对象是容器的全部功能那你就大错特错了,因为它比你想象的要强得多,它负责对象整个的生命周期的管理包括:创建,装配,销毁.</p>
+<h2 id="2-IOC容器"><a href="#2-IOC容器" class="headerlink" title="2. IOC容器"></a>2. IOC容器</h2><p>容器中经常会用到一个术语就是IOC容器.全称:Inversion of Control.这是一种设计思想<br>怎么理解IOC呢?</p>
+<p>在java开发中,将自己设计好的对象交给容器控制,而非在对象的内部控制.</p>
+<p>那么问题来了,是谁控制谁呢?控制的是什么?为何是反转而不是正转,左转,右转啥的?哪些东西发生了反转?这都是问题</p>
+<ol>
+<li>第一个问题:</li>
+</ol>
+<p>之前我们所学的对象是这样生成的:我们在对象的内部直接new来创建对象,是通过程序去主动创建对象.而IOC就不一样了,它有一个专门的容器来创建对象,通俗的讲就是它想创建什么对象,它说了算.</p>
+<p>而现在谁控制谁这个问题当然就简单了,当然就是IOC控制对象.</p>
+<ol start="2">
+<li>第二个问题:</li>
+</ol>
+<p>控制的是什么呢?当然是外部资源一获取咯!(外部资源是一个广泛的定义:不只是对象,如文件啊,图片啊什么的这些)</p>
+<ol start="3">
+<li>第三个问题:</li>
+</ol>
+<p>为什么要中反转呢?只是Inversion的翻译吗?当然不是的.</p>
+<p>在以前的设计中,由我们自己在对象中主动控制去直接获取依赖对象,也就是正转.而反转呢则是由容器来完成创建及注入依赖对象;因为这是一个被动的过程,我们并没有要求它(容器)这么做.而对象只是被动的接受依赖对象.</p>
+<ol start="4">
+<li>第四个问题:</li>
+</ol>
+<p>哪些东西发生了反转?  依赖对象获到被反转了.</p>
+<p>所以汇成一句话就是:我们的应用程里不用再过对象的创建和管理对象之间的依赖关系了,这些都让IOC容器代劳吧.我们把对象的创建,管理的控制权都交给spring容器,这就是一种控制权的反转,至此我们就知道了为什么spring容器称之为IOC容器.</p>
+<p>谁依赖于谁：当然是应用程序依赖于IoC容器；</p>
+<ul>
+<li><p>为什么需要依赖：应用程序需要IoC容器来提供对象需要的外部资源；</p>
+</li>
+<li><p>谁注入谁：很明显是IoC容器注入应用程序某个对象，应用程序依赖的对象；</p>
+</li>
+<li><p>注入了什么：就是注入某个对象所需要的外部资源（包括对象、资源、常量数据）。</p>
+</li>
+</ul>
+<p>我们可以说spring容器是IOC容器,而不能说IOC容器就是spring容器.</p>
+<p>基于IOC容器的框架还有很多.</p>
+<p>好了现在理解spring这个概念之后,你也不能做什么,光有这个容器你也造出不对象对吧!</p>
+<p>要容器造什么对象是由我们自己决定的,决定对象间依赖关系的也是我们自己,容器只是提供管理对象的空间而已.那么问题就出现了,我们怎么向容器中放入我们需要的对象呢?</p>
+<p>这就讲到我们要讲的重点了.应用上下文</p>
+<ul>
+<li>什么是应用上下文呢?</li>
+</ul>
+<p>光有容器你其实什么都干不了！你以为容器那么科幻，跟叮当猫面前的百宝袋一样，你想要啥它就给你啥？实际上，容器里面什么都没有，决定容器里面放什么对象的是我们自己，决定对象之间的依赖关系的，也是我们自己，容器只是给我们提供一个管理对象的空间而已。那么，我们怎么向容器中放入我们需要容器代为管理的对象呢？这就涉及到Spring的应用上下文了。<br>什么是应用上下文呢，你可以简单的理解成就是将你需要Spring帮你管理的对象放入容器的那么一种。。一种。。额。。一种容器对象——是的，应用上下文即是Spring容器的一种抽象化表述；而我们常见的ApplicationContext本质上说就是一个维护Bean定义以及对象之间协作关系的高级接口。额，听起来是不是很抽象拗口？那你再读一遍呢。。。这里，我们必须明确，Spring的核心是容器，而容器并不唯一，框架本身就提供了很多个容器的实现，大概分为两种类型：一种是不常用的BeanFactory，这是最简单的容器，只能提供基本的DI功能；还有一种就是继承了BeanFactory后派生而来的应用上下文，其抽象接口也就是我们上面提到的的ApplicationContext，</p>
+<h2 id="spring中容器的实现大概分为两种"><a href="#spring中容器的实现大概分为两种" class="headerlink" title="spring中容器的实现大概分为两种:"></a>spring中容器的实现大概分为两种:</h2><ol>
+<li><p>本身不常用的BeanFactory,这是最简单的容器,只能提供基本的DI功能.</p>
+</li>
+<li><p>就是继承了BeanFactory后派生而来的应用上下文.其抽象接口也就是ApplicationContext.他就能提供更多企业级的服务.如解析配置文本信息.</p>
+</li>
+</ol>
+<p>有了上下文我们就能向容器注册需要spring管理的对象了.对于上下文抽象接口,spring也为我们提供了多种类型的容器实现,供我们在不同的应用场景选择.</p>
+<ul>
+<li><p>AnnotationConfigApplicationContext:从一个或多个基于java的配置类中加载上下文定义，适用于java注解的方式；</p>
+</li>
+<li><p>ClassPathXmlApplicationContext:从类路径下的一个或多个xml配置文件中加载上下文定义，适用于xml配置的方式；</p>
+</li>
+<li><p>FileSystemXmlApplicationContext:从文件系统下的一个或多个xml配置文件中加载上下文定义，也就是说系统盘符中加载xml配置文件；</p>
+</li>
+<li><p>AnnotationConfigWebApplicationContext:专门为web应用准备的，适用于注解方式；</p>
+</li>
+<li><p>XmlWebApplicationContext:从web应用下的一个或多个xml配置文件加载上下文定义，适用于xml配置方式。</p>
+</li>
+</ul>
+<h2 id="bean的生命周期"><a href="#bean的生命周期" class="headerlink" title="bean的生命周期"></a>bean的生命周期</h2><ol>
+<li>Spring对bean进行实例化；</li>
+<li>Spring将值和bean的引用注入到bean对应的属性中；</li>
+<li>如果bean实现了BeanNameAware接口，Spring将bean的ID传递给setBeanName()方法；</li>
+<li>如果bean实现了BeanFactoryAware接口，Spring将调用setBeanFactory()方法，将BeanFactory容器实例传入；</li>
+<li>如果bean实现了ApplicationContextAware接口，Spring将调用setApplicationContext()方法，将bean所在的应用上下文的引用传入进来；</li>
+<li>如果bean实现了BeanPostProcessor接口，Spring将调用它们的postProcessBeforeInitialization()方法；</li>
+<li>如果bean实现了InitializingBean接口，Spring将调用它们的afterPropertiesSet()方法。类似地，如果bean使用init-method声明了初始化方法，该方法也会被调用；</li>
+<li>此时，bean已经准备就绪，可以被应用程序使用了，它们将一直驻留在应用上下文中，直到该应用上下文被销毁；</li>
+<li>如果bean实现了DisposableBean接口，Spring将调用它的destroy()方法，同样，如果bean使用destroy-method声明了销毁方法，该方法也会被调用。</li>
+</ol>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2021/04/20/self-param-anno/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            java 自定义参数解析器
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2021/04/06/self-thread/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">java 自定义实现线程池</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

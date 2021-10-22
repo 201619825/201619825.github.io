@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>ElasticSearch 概念及使用 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="ElasticSearch 概念及使用 1. 前言 Elasticsearch 是一个分布式文档储存中间件，它不会将信息储存为列数据行，而是储存已序列化为 JSON 文档的复杂数据结构。当你在一个集群中有多个节点时，储存的文档分布在整个集群里面，并且立刻可以从任意节点去访问。  当文档被储存时，它将建立索引并且近实时（1s）被搜索。 Elasticsearch 使用一种被称为倒排索引的数据结构，该">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ElasticSearch 概念及使用">
+<meta property="og:url" content="https://201619825.github.io/2021/06/22/elsticSearch/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="ElasticSearch 概念及使用 1. 前言 Elasticsearch 是一个分布式文档储存中间件，它不会将信息储存为列数据行，而是储存已序列化为 JSON 文档的复杂数据结构。当你在一个集群中有多个节点时，储存的文档分布在整个集群里面，并且立刻可以从任意节点去访问。  当文档被储存时，它将建立索引并且近实时（1s）被搜索。 Elasticsearch 使用一种被称为倒排索引的数据结构，该">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-22T02:41:43.000Z">
+<meta property="article:modified_time" content="2021-06-22T03:43:58.650Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="中间件">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-elsticSearch" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      ElasticSearch 概念及使用
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/06/22/elsticSearch/" class="article-date">
+  <time datetime="2021-06-22T02:41:43.000Z" itemprop="datePublished">2021-06-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="tag">中间件</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="ElasticSearch-概念及使用"><a href="#ElasticSearch-概念及使用" class="headerlink" title="ElasticSearch 概念及使用"></a>ElasticSearch 概念及使用</h1></blockquote>
+<h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h2><p>&ensp;&ensp;Elasticsearch 是一个分布式文档储存中间件，它不会将信息储存为列数据行，而是储存已序列化为 JSON 文档的复杂数据结构。当你在一个集群中有多个节点时，储存的文档分布在整个集群里面，并且立刻可以从任意节点去访问。</p>
+<p>&ensp;&ensp;当文档被储存时，它将建立索引并且近实时（1s）被搜索。 Elasticsearch 使用一种被称为倒排索引的数据结构，该结构支持快速全文搜索。在倒排索引里列出了所有文档中出现的每一个唯一单词并分别标识了每个单词在哪一个文档中。</p>
+<p>&ensp;&ensp;Elasticsearch 具备默认模式的能力，这意味着文档建立索引的时候无需明确指定每个字段的数据类型。当启用动态映射时，Elasticsearch 自动检测并将新字段添加到索引。该默认行为使索引和浏览数据变得容易，只要文档开始建立索引， Elasticsearch 就会检测布尔值，浮点数和整数值，日期和字符串，并将其映射到对应的数据类型中。</p>
+<h2 id="2-ElasticSearch概念"><a href="#2-ElasticSearch概念" class="headerlink" title="2. ElasticSearch概念"></a>2. ElasticSearch概念</h2><ul>
+<li><p>文档：<br>&ensp;&ensp;Elasticsearch是面向文档(document oriented)的，这意味着它可以存储整个对象或文档(document)。然而它不仅仅是存储，还会索引(index，注意这里是动词的意思)每个文档的内容使之可以被搜索。在Elasticsearch中，你可以对文档（而非成行成列的数据）进行索引、搜索、排序、过滤。这种理解数据的方式与以往完全不同，这也是Elasticsearch能够执行复杂的全文搜索的原因之</p>
+</li>
+<li><p>索引：<br>&ensp;&ensp;在Elasticsearch中存储数据的行为就叫做索引(indexing, 动词)，不过在索引之前，我们需要明确数据应该存储在哪里，同样，存储在索引(indices, 名词)中。<br>&ensp;&ensp;索引」含义的区分:<br>你可能已经注意到索引(index)这个词在Elasticsearch中有着不同的含义，所以有必要在此做一下区分:<br>（1）索引（名词） 如上文所述，一个索引(index)就像是传统关系数据库中的数据库，它是相关文档存储的地方，index的复数是indices 或indexes。<br>（2）索引（动词） 「索引一个文档」表示把一个文档存储到索引（名词）里，以便它可以被检索或者查询。这很像SQL中的INSERT关键字，差别是，如果文档已经存在，新的文档将覆盖旧的文档。<br>倒排索引 传统数据库为特定列增加一个索引，例如B-Tree索引来加速检索。Elasticsearch和Lucene使用一种叫做倒排索引(inverted index)的数据结构来达到相同目的。</p>
+</li>
+<li><p>类型<br>文档归属于一种类型(type),而这些类型存在于索引(index)中，我们可以画一些简单的对比图来类比传统关系型数据库：</p>
+</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Relational DB -&gt; Databases -&gt; Tables -&gt; Rows -&gt; Columns</span><br><span class="line">Elasticsearch -&gt; Indices   -&gt; Types  -&gt; Documents -&gt; Fields</span><br></pre></td></tr></table></figure></div>
+
+<p>Elasticsearch集群可以包含多个索引(indices)（数据库），每一个索引可以包含多个类型(types)（表），每一个类型包含多个文档(documents)（行），然后每个文档包含多个字段(Fields)（列）。</p>
+<ul>
+<li>分析<br>分析(analysis)是这样一个过程：<br>（1）首先，标记化一个文本块为适用于倒排索引单独的词(term)<br>（2）然后标准化这些词为标准形式， 提高它们的“可搜索性”或“查全率”<br>（3）要快速检索的字段，分析以后，生成倒排索引。检索的时候，输入的字符串也会经过同样规则的分析，这样可以提高“可搜索性”</li>
+</ul>
+<h2 id="3-ElasticSearch使用"><a href="#3-ElasticSearch使用" class="headerlink" title="3. ElasticSearch使用"></a>3. ElasticSearch使用</h2><ul>
+<li>文档(Document)<br>es是面向文档的，文档是es中可搜索的最小单位，es的文档由一个或多个字段组成，类似于关系型数据库中的一行记录，但es的文档是以JSON进行序列化并保存的，每个JSON对象由一个或多个字段组成，字段类型可以是布尔，数值，字符串、二进制、日期等数据类型。</li>
+</ul>
+<p>es每个文档都有唯一的id,这个id可以由我们自己指定，也可以由es自动生成。</p>
+<p>文档的元数据<br>es每一个文档，除了保存我们写入进行的文档原始数据外，也有文档自己的元数据，这些元数据，用于标识文档的相关信息。</p>
+<p>下面是一个普通的es文档：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;_index&quot; : &quot;test_logs2&quot;,</span><br><span class="line">  &quot;_type&quot; : &quot;_doc&quot;,</span><br><span class="line">  &quot;_id&quot; : &quot;1&quot;,</span><br><span class="line">  &quot;_version&quot; : 1,</span><br><span class="line">  &quot;_seq_no&quot; : 0,</span><br><span class="line">  &quot;_primary_term&quot; : 1,</span><br><span class="line">  &quot;found&quot; : true,</span><br><span class="line">  &quot;_source&quot; : &#123;</span><br><span class="line">    &quot;uid&quot; : 1,</span><br><span class="line">    &quot;username&quot; : &quot;test&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>从上面的文档中，我们可以看文档的元数据字段如下：</p>
+<ul>
+<li>_index：文档所在索引名称</li>
+<li>_source：原始json数据</li>
+<li>_type：文档所属类型，es7.0以后只有为 _doc</li>
+<li>_version：文档版本,如果对文档进行修改，则该字段会增加</li>
+<li>_score：相关性打分</li>
+<li>id：文档唯一id<br>下面我们来了解es通过RESTful Api提供了文档的CURD等操作：</li>
+</ul>
+<h3 id="Create"><a href="#Create" class="headerlink" title="Create"></a>Create</h3><p>通过es的RESTful API,使用HTTP的PUT方法，可以在某个索引中创建一个文档，在Kibana的Dev Tools中，我们可以使用下面的语句创建一个文档：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 在my_test索引中创建一个文档</span><br><span class="line">PUT &#x2F;my_test&#x2F;_create&#x2F;1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;uid&quot;:1,</span><br><span class="line">    &quot;username&quot;:&quot;one&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Index"><a href="#Index" class="headerlink" title="Index"></a>Index</h3><p>在es中，索引大概有以下三种含义与作用： 1. 动词，es中一种创建文档的方式，就是现在讲到的。 2. 名词，es组织文档的方式，下面会讲到。 3. 动词，对文档的字段进行分词并存储，以后会讲到</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 使用Index的方式</span><br><span class="line">PUT &#x2F;my_test&#x2F;_doc&#x2F;1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;uid&quot;:1,</span><br><span class="line">    &quot;username&quot;:&quot;test&quot;</span><br><span class="line">&#125;</span><br><span class="line">Index的方式与Create一样，用于创建一个es文档，不同的是，使用Index创建文档时，如果指定的文档id已经存在，则会删除原文档，并重新创建一个文档，并且文档的字段_version会加1</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Update"><a href="#Update" class="headerlink" title="Update"></a>Update</h3><p>更新一个文档的数据使用的是HTTP的POST方法，而且修改的字段信息还必须在doc中，如下：<br>使用Update的方式是直接更新数据，这点与使用Index创建文档，文档存在时，会删除文档再重新创建是不同的。</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 更新</span><br><span class="line">POST &#x2F;my_test&#x2F;_doc&#x2F;1</span><br><span class="line">&#123;</span><br><span class="line">    &quot;doc&quot;:&#123;</span><br><span class="line">        &quot;username&quot;:&quot;this is a document&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Delete"><a href="#Delete" class="headerlink" title="Delete"></a>Delete</h3><p>使用HTTP中DELETE方法，可以删除一个es的文档，示例如下：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 删除文档</span><br><span class="line">DELETE &#x2F;my_test&#x2F;_doc&#x2F;1</span><br></pre></td></tr></table></figure></div>
+
+
+<h3 id="Read"><a href="#Read" class="headerlink" title="Read"></a>Read</h3><p>读取一个es文档就很简单了，使用HTTP的GET方法就可以了，如下：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 读取</span><br><span class="line">GET &#x2F;my_test&#x2F;_doc&#x2F;1</span><br></pre></td></tr></table></figure></div>
+
+
+<h3 id="Bulk-Api"><a href="#Bulk-Api" class="headerlink" title="Bulk Api"></a>Bulk Api</h3><p>上面的讲的对关于文档的Index,Create,Update,Delete等操作，但每一次只能对一个索引的一个文档进行操作，而我们知道每一次请求服务器进行操作时，网络请求往返时间的开销是一个很大的消耗，如果每个请求都只做一个操作，那么就有点太浪费了。</p>
+<p>所以es的文档的bulk api支持在一次请求中同时对不同索引中的文档进行Index,Create,Update,Delete等操作，也就是所谓的批量处理，在处理过程，即便其中某个操作出错，也不会影响其他操作，如下：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">POST _bulk</span><br><span class="line">&#123;&quot;create&quot;:&#123;&quot;_index&quot;:&quot;my_test2&quot;,&quot;_id&quot;:4&#125;&#125;  </span><br><span class="line">&#123;&quot;uid&quot;:2,&quot;username&quot;:&quot;333333333333333333&quot;&#125;</span><br><span class="line">&#123;&quot;index&quot;:&#123;&quot;_index&quot;:&quot;my_test2&quot;,&quot;_id&quot;:10&#125;&#125;</span><br><span class="line">&#123;&quot;uid&quot;:10,&quot;username&quot;:&quot;tttt&quot;&#125;</span><br><span class="line">&#123;&quot;delete&quot;:&#123;&quot;_index&quot;:&quot;my_test2&quot;,&quot;_id&quot;:1&#125;&#125;</span><br><span class="line">&#123;&quot;update&quot;:&#123;&quot;_index&quot;:&quot;my_test2&quot;,&quot;_id&quot;:2&#125;&#125;</span><br><span class="line">&#123;&quot;doc&quot;:&#123;&quot;uid&quot;:2,&quot;username&quot;:&quot;hhhhhhhhhhhhhhhhh&quot;&#125;&#125;</span><br><span class="line">上面只是bulk api的简单示例，如果要熟悉语法，还是要多看看es的官方文档。</span><br></pre></td></tr></table></figure></div>
+
+
+<ul>
+<li>索引(Index)<br>es索引，是es组织文档的方式，是拥有相结构文档的集合，可以把es的索引类比为关系型数据库的一张数据表。</li>
+</ul>
+<p>下面我们来看看对索引的各种操作的RESTful APIs，如下：</p>
+<h3 id="Create-1"><a href="#Create-1" class="headerlink" title="Create"></a>Create</h3><p>使用HTTP的PUT方法便可以创建一个索引，在Kibna的Dev Tools，使用下面的语句便可创建一个索引：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PUT &#x2F;my_test</span><br></pre></td></tr></table></figure></div>
+
+<p>在创建索引时也指定mapping和setting，如下：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PUT &#x2F;my_test</span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot; : &#123;</span><br><span class="line">        &quot;index&quot; : &#123;</span><br><span class="line">            &quot;number_of_shards&quot; : 3, </span><br><span class="line">            &quot;number_of_replicas&quot; : 2 </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Exists"><a href="#Exists" class="headerlink" title="Exists"></a>Exists</h3><p>可以使用HTTP的HEAD方法判断索引是否存在，如下：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 判断索引是否存在</span><br><span class="line">HEAD &#x2F;my_test</span><br></pre></td></tr></table></figure></div>
+
+<p>如果索引存在，则http状态码返回200，如果不存在，则返回404。</p>
+<h3 id="Get"><a href="#Get" class="headerlink" title="Get"></a>Get</h3><p>使用HTTP的GET方法可以获取索引的setting和mapping等信息，如下：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;index</span><br></pre></td></tr></table></figure></div>
+
+<p>返回如下的结果：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;my_test&quot; : &#123;</span><br><span class="line">    &quot;aliases&quot; : &#123; &#125;,</span><br><span class="line">    &quot;mappings&quot; : &#123; &#125;,</span><br><span class="line">    &quot;settings&quot; : &#123;</span><br><span class="line">      &quot;index&quot; : &#123;</span><br><span class="line">        &quot;creation_date&quot; : &quot;1564757617415&quot;,</span><br><span class="line">        &quot;number_of_shards&quot; : &quot;1&quot;,</span><br><span class="line">        &quot;number_of_replicas&quot; : &quot;1&quot;,</span><br><span class="line">        &quot;uuid&quot; : &quot;z6zGhu_ERA-R1c0m2fQrvg&quot;,</span><br><span class="line">        &quot;version&quot; : &#123;</span><br><span class="line">          &quot;created&quot; : &quot;7020099&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;provided_name&quot; : &quot;my_test&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Delete-1"><a href="#Delete-1" class="headerlink" title="Delete"></a>Delete</h3><p>es中删除的索引API，允许我们删除已经存在的索引，有以下几种情况：</p>
+<h3 id="使用索引名，删除单个或多个索引"><a href="#使用索引名，删除单个或多个索引" class="headerlink" title="使用索引名，删除单个或多个索引"></a>使用索引名，删除单个或多个索引</h3><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 删除my_test</span><br><span class="line">DELETE &#x2F;my_test</span><br><span class="line"></span><br><span class="line"># 删除多个索引,用逗号分隔</span><br><span class="line">DELETE &#x2F;my_test,my_test1,my_test2</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="使用通配符-删除多个索引-慎用"><a href="#使用通配符-删除多个索引-慎用" class="headerlink" title="使用通配符*删除多个索引(慎用)"></a>使用通配符*删除多个索引(慎用)</h3><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 删除以my_test为前缀的索引</span><br><span class="line">DELETE &#x2F;my_test*</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="使用-all删除es服务器上的全部索引"><a href="#使用-all删除es服务器上的全部索引" class="headerlink" title="使用_all删除es服务器上的全部索引"></a>使用_all删除es服务器上的全部索引</h3><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 删除全部索引</span><br><span class="line">DELETE &#x2F;_all</span><br></pre></td></tr></table></figure></div>
+
+<p>注意，这种操作非常危险，不推荐使用，如果想禁用这种操作，可在在es的config/elasticsearch.yml中将参数action.destructive_requires_name设置为true，如：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">action.destructive_requires_name：true</span><br></pre></td></tr></table></figure></div>
+
+<p>这样的话，则不能执行以上的操作了。</p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2021/07/03/mq-info1/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            MQ的使用及介绍
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2021/06/07/factory/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Java 工厂模式</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

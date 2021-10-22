@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java 工厂模式 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Java 工厂模式 1. Java接口回顾  1. Java中接口的概念     在Java中接口是一种特殊的抽象类，根一般的抽象类相比，接口里面的所有方法都是抽象方法，接口里面的所有属性都是常量。即接口里面只有方法定义而没有任何方法实现            2. 接口的用途     通常用接口来定义实现类的外观，也就是实现类的行为定义，用来约束实现类的行为。接口就相当于一份契约，根据外部应用需">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 工厂模式">
+<meta property="og:url" content="https://201619825.github.io/2021/06/07/factory/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="Java 工厂模式 1. Java接口回顾  1. Java中接口的概念     在Java中接口是一种特殊的抽象类，根一般的抽象类相比，接口里面的所有方法都是抽象方法，接口里面的所有属性都是常量。即接口里面只有方法定义而没有任何方法实现            2. 接口的用途     通常用接口来定义实现类的外观，也就是实现类的行为定义，用来约束实现类的行为。接口就相当于一份契约，根据外部应用需">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210607/20210607183042.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210607/20210607202946.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210607/20210607203108.png">
+<meta property="article:published_time" content="2021-06-07T09:12:16.000Z">
+<meta property="article:modified_time" content="2021-06-10T12:26:44.690Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210607/20210607183042.png">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-factory" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Java 工厂模式
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/06/07/factory/" class="article-date">
+  <time datetime="2021-06-07T09:12:16.000Z" itemprop="datePublished">2021-06-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="Java-工厂模式"><a href="#Java-工厂模式" class="headerlink" title="Java 工厂模式"></a>Java 工厂模式</h1></blockquote>
+<h2 id="1-Java接口回顾"><a href="#1-Java接口回顾" class="headerlink" title="1. Java接口回顾"></a>1. Java接口回顾</h2><ol>
+<li><p>Java中接口的概念<br>在Java中接口是一种特殊的抽象类，根一般的抽象类相比，接口里面的所有方法都是抽象方法，接口里面的所有属性都是常量。即接口里面只有方法定义而没有任何方法实现</p>
+</li>
+<li><p>接口的用途<br>通常用接口来定义实现类的外观，也就是实现类的行为定义，用来约束实现类的行为。接口就相当于一份契约，根据外部应用需要的功能，约定了实现类应该要实现的功能，但是具体的实现类除了实现接口约定的功能外，还可以根据需要实现其他一些功能，这是允许的，也就是说实现类的功能包含但不仅限于接口约束的功能。 </p>
+</li>
+<li><p>接口的思想<br>根据接口的作用和用途，浓缩下来，接口的思想就是“封装隔离”，通常提到的封装是指对数据的封装，但是这里的封装是指“对被隔离体的行为的封装”，或者是“对被隔离体的职责的封装”；而隔离指的是外部调用和内部实现，外部调用只能通过接口进行调用，外部调用是不知道内部具体实现的，也就是说外部调用和内部实现是被接口隔离开的。  </p>
+</li>
+<li><p>使用接口的优点<br>由于外部调用和内部实现被接口隔离开了，那么只要接口不变，内部实现的变化就不会影响到外部应用，从而使得系统更灵活，具有更好的扩展性和可维护性，这也就是所谓“接口是系统可插拔性的保证”这句话的意思。  </p>
+</li>
+<li><p>接口和抽象类的选择<br>在既要定义子类的行为，又要为子类提供公共的功能时应选择抽象类。</p>
+<p>比如现在新华书店需要新进一批书籍，有语文书、英语书等，需要联系厂家，厂家根据不同的需求，生产不同的书,不使用设计模式，代码如下：</p>
+</li>
+</ol>
+<ul>
+<li>定义通用接口（或抽象类），非具体的功能</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface Book &#123;</span><br><span class="line">	&#x2F;&#x2F;某个具体功能的方法定义，用test1演示</span><br><span class="line">	public void product(String name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>对接口的实现</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class ChineseBook implments Book&#123;</span><br><span class="line">    public void product(String name) &#123;</span><br><span class="line">		System.out.println(&quot;生产： &quot; + name);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>客户端调用</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class XinHua &#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Book book &#x3D; new ChineseBook();</span><br><span class="line">		book.product(&quot;语文书，并订购&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="2-简单工厂模式"><a href="#2-简单工厂模式" class="headerlink" title="2. 简单工厂模式"></a>2. 简单工厂模式</h2><p>简单工厂模式,又叫静态工厂方法，它并不属于GoF的23种经典设计模式，但通常将它用作学习其它工厂模式的基础，用来解决上述问题的一个合理的解决方案就是简单工厂。</p>
+<ol>
+<li><p>简单工厂的定义<br>提供一个创建对象实例的功能，而无须关心其具体实现。被创建实例的类型可以是接口、抽象类，也可以是具体的类。</p>
+</li>
+<li><p>用简单工厂解决问题思路<br>我们在模块内部新建一个类，在这个类里面来创建接口，然后把创建好的接口返回给客户端，这样，外部应用就只需要根据这个类来获取相应的接口对象，然后就可以操作接口定义的方法了。把这样的对象称为简单工厂，就叫它Factory。这样一来，客户端就可以通过Factory来获取需要的接口对象，然后调用接口的方法来实现需要的功能，而且客户端也不用再关心具体的实现了。</p>
+</li>
+<li><p>简单工厂说明<br>Api：定义客户所需要的功能接口；<br>Impl：具体实现Api的实现类，可能会有多个<br>Factory：工厂，选择合适的实现类来创建Api接口对象。<br>Client：客户端，通过Factory来获取Api接口对象，然后面向Api接口编程。</p>
+</li>
+</ol>
+<ul>
+<li>接口的定义</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface Api &#123;</span><br><span class="line">	&#x2F;&#x2F;具体功能方法的定义</span><br><span class="line">	public void operation(String str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>接口的具体实现对象A</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class ImplA implements Api &#123;</span><br><span class="line">	public void operation(String str) &#123;</span><br><span class="line">		System.out.println(&quot;ImplA s &#x3D;&#x3D; &quot; + str);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>接口的具体实现对象B</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class ImplB implements Api &#123;</span><br><span class="line">	public void operation(String str) &#123;</span><br><span class="line">		System.out.println(&quot;ImplB s &#x3D;&#x3D; &quot; + str);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>工厂类用于创建Api对象</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public class Factory &#123;</span><br><span class="line"> </span><br><span class="line">	&#x2F;&#x2F;具体创建Api对象的方法，int condition示意，从外部传入的选择条件</span><br><span class="line">	public static Api createApi(int condition)&#123;</span><br><span class="line">		&#x2F;**</span><br><span class="line">		 * 应该根据某些条件去选择究竟创建哪一个具体的实现对象</span><br><span class="line">		 * 这些条件可以从外部传入，也可以从其他途径获取</span><br><span class="line">		 * 如果只有一个实现，可以省略条件，因为没有选择的必要</span><br><span class="line">		 *&#x2F;</span><br><span class="line">		Api api &#x3D; null;</span><br><span class="line">		if(condition &#x3D;&#x3D; 1)&#123;</span><br><span class="line">			api &#x3D; new ImplA();</span><br><span class="line">		&#125;else if(condition &#x3D;&#x3D; 2)&#123;</span><br><span class="line">			api &#x3D; new ImplB();</span><br><span class="line">		&#125;</span><br><span class="line">		return api;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>客户端调用</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Client &#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		&#x2F;&#x2F;通过简单工厂来获取接口对象</span><br><span class="line">		Api api &#x3D; Factory.createApi(1);</span><br><span class="line">		api.operation(&quot;正在使用简单工厂，选择条件为1&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="3-工厂方法模式"><a href="#3-工厂方法模式" class="headerlink" title="3. 工厂方法模式"></a>3. 工厂方法模式</h2><p>简单工厂模式虽然简单，但存在一个很严重的问题。当系统中需要引入新产品时，由于静态工厂方法通过所传入参数的不同来创建不同的产品，这必定要修改工厂类的源代码，将违背“开闭原则”，如何实现增加新产品而不影响已有代码？ 工厂方法模式应运而生。<br><img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210607/20210607183042.png"><br>在图中，Logger接口充当抽象产品，其子类FileLogger和DatabaseLogger充当具体产品，LoggerFactory接口充当抽象工厂，其子类FileLoggerFactory和DatabaseLoggerFactory充当具体工厂。 </p>
+<ul>
+<li>Logger：日志记录器接口，充当抽象产品角色</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface Logger&#123;</span><br><span class="line">    public void writeLog();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>DatabaseLogger：数据库日志记录器，充当具体产品角色</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class DatabaseLogger implements Logger&#123;</span><br><span class="line">    public void writeLog()&#123;</span><br><span class="line">        System.out.println(&quot;数据库日志记录&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>FileLogger：文件日志记录器，充当具体产品角色</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public class FileLogger implements Logger&#123;</span><br><span class="line">    public void writeLog()&#123;</span><br><span class="line">        System.out.println(&quot;数据库日志记录&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>LoggerFactory：日志记录器工厂接口，充当抽象工厂角色</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface LoggerFactory&#123;</span><br><span class="line">    public Logger createLogger(); &#x2F;&#x2F;抽象工厂方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>DatabaseLoggerFactory：数据库日志记录器工厂类，充当具体工厂角色</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class DatabaseLoggerFactory implements LoggerFactory&#123;</span><br><span class="line">    public Logger createLogger()&#123;</span><br><span class="line">        Logger logger &#x3D; new DatabaseLogger();</span><br><span class="line">        return logger;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>FileLoggerFactory：数据库日志记录器工厂类，充当具体工厂角色</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class FileLoggerFactory implements LoggerFactory&#123;</span><br><span class="line">    public Logger createLogger()&#123;</span><br><span class="line">        Logger logger &#x3D; new FileLogger();</span><br><span class="line">        return logger;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>Client客户端测试类</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class Client&#123;</span><br><span class="line">    public static void main(String args[])&#123;</span><br><span class="line">        LoggerFactory factory;</span><br><span class="line">        Logger logger;</span><br><span class="line"></span><br><span class="line">        factory &#x3D; new FileLoggerFactory(); &#x2F;&#x2F;如需更换日志记录器，只需要在此处修改具体工厂类的类名即可。</span><br><span class="line">        logger &#x3D; factory.createLogger();</span><br><span class="line">        logger.writeLog();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="4-抽象工厂模式"><a href="#4-抽象工厂模式" class="headerlink" title="4. 抽象工厂模式"></a>4. 抽象工厂模式</h2><p>抽象工厂模式，对方法工厂模式进行抽象。世界各地都有自己的水果园，我们将这些水果园抽象为一个水果园接口，在中国、英国和美国都有水果园，种植不同的水果，比如苹果、香蕉和梨等。这里将苹果进行抽象，所以，苹果又分为中国苹果，英国苹果和美国苹果。中国的水果园中有苹果、香蕉和梨等。抽象工厂中声明生产苹果、香蕉和梨等水果，那么具体的工厂相当于中国、英国和美国的水果园，各个水果园负责生产水果、香蕉和梨等。</p>
+<ol>
+<li>相关术语</li>
+</ol>
+<ul>
+<li>产品等级结构：产品的继承结构，与类的继承相似。例如苹果是一个抽象的类，那么中国苹果、美国苹果和英国的苹果就是其子类。</li>
+<li>产品族：指同一个工厂生产的，位于不同的产品等级结构的一组产品。例如苹果、香蕉和梨都产自中国，水果的等级结构不同，构成一个产品族。</li>
+<li>抽象工厂：是一个接口，抽象工厂模式的核心，包含对多个产品等级结构的声明，任何工厂类都必须实现这个接口。</li>
+<li>具体工厂：是抽象工厂的实现，负责实例化某个产品族中的产品对象。例如中国工厂生产苹果、香蕉和梨这些产品。</li>
+</ul>
+<ol start="2">
+<li><p>产品族和产品等级结构示意图</p>
+<img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210607/20210607202946.png">
+</li>
+<li><p>抽象工厂模式示意图</p>
+<img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210607/20210607203108.png">
+
+</li>
+</ol>
+<ul>
+<li>创建Fruit接口</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface Fruit &#123;</span><br><span class="line">    public void get();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>Apple抽象类</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Apple implements Fruit&#123;</span><br><span class="line">    public abstract void get();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>ChinaApple类</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class ChinaApple extends Apple &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void get() &#123;</span><br><span class="line">        System.out.println(&quot;中国的苹果...&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>创建抽象工厂</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public interface FruitFactory &#123;</span><br><span class="line">    &#x2F;&#x2F;实例化苹果</span><br><span class="line">    public Fruit getApple();</span><br><span class="line">    &#x2F;&#x2F;实例化香蕉</span><br><span class="line">    public Fruit getBanana();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>具体工厂</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class ChinaFactory implements FruitFactory &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Fruit getApple() &#123;</span><br><span class="line">        return new ChinaApple();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public Fruit getBanana() &#123;</span><br><span class="line">        return new ChinaBanana();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>生产水果客户端</li>
+</ul>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class MainClass &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        &#x2F;&#x2F;创建中国工厂</span><br><span class="line">        FruitFactory chinaFactory &#x3D; new ChinaFactory();</span><br><span class="line">        &#x2F;&#x2F;通过中国工厂生产中国苹果实例</span><br><span class="line">        Fruit apple &#x3D; chinaFactory.getApple();</span><br><span class="line">        apple.get();</span><br><span class="line">        &#x2F;&#x2F;通过中国工厂生产中国香蕉实例</span><br><span class="line">        Fruit banana &#x3D; chinaFactory.getBanana();</span><br><span class="line">        banana.get();        </span><br><span class="line">        </span><br><span class="line">        &#x2F;&#x2F;创建英国工厂</span><br><span class="line">        FruitFactory englandFactory &#x3D; new EnglandFactory();</span><br><span class="line">        &#x2F;&#x2F;通过英国工厂生产英国苹果实例</span><br><span class="line">        Fruit apple1 &#x3D; englandFactory.getApple();</span><br><span class="line">        apple1.get();</span><br><span class="line">        &#x2F;&#x2F;通过英国工厂生产英国香蕉实例</span><br><span class="line">        Fruit banana2 &#x3D; englandFactory.getBanana();</span><br><span class="line">        banana2.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>模式来源于生活。抽象工厂模式，对工厂方法模式进行了升级。对产品进行了进一步的抽象，同时改变了抽象工厂和具体工厂的设计模式。这种模式便于横向的扩展，例如我们想添加一个美国工厂来生产苹果和香蕉，只需要新建美国苹果，美国香蕉和生产这两种水果的具体工厂–美国工厂。缺点就是不利于纵向的扩展，例如我们想在工厂中生产梨，这就需要修改抽象工厂，各个具体工厂也同时需要修改。</p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2021/06/22/elsticSearch/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            ElasticSearch 概念及使用
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2021/05/28/offer-2/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Java网络通信</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

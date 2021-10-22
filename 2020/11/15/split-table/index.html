@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Java 水平分表操作 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Java 水平分表操作 前言  背景：现有一张上亿数据的表，为更好的维护表中的数据及降低风险，现对这张上亿数据的表进行水平分表的操作，即根据创建时间来生成路由信息，再根据路由信息去判断读写哪张表的数据。人们都对第一次的事物操作比较印象深刻，此次也是希望帮到我后面再进行分表操作时能够考虑的更加完备。下面的分表方法是自己第一次进行分表操作，沿用的组内大哥的分表思维及代码结构，不得不说对自己帮助是很大。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 水平分表操作">
+<meta property="og:url" content="https://201619825.github.io/2020/11/15/split-table/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="Java 水平分表操作 前言  背景：现有一张上亿数据的表，为更好的维护表中的数据及降低风险，现对这张上亿数据的表进行水平分表的操作，即根据创建时间来生成路由信息，再根据路由信息去判断读写哪张表的数据。人们都对第一次的事物操作比较印象深刻，此次也是希望帮到我后面再进行分表操作时能够考虑的更加完备。下面的分表方法是自己第一次进行分表操作，沿用的组内大哥的分表思维及代码结构，不得不说对自己帮助是很大。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-15T05:54:20.000Z">
+<meta property="article:modified_time" content="2021-08-04T06:30:50.672Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-split-table" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Java 水平分表操作
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/11/15/split-table/" class="article-date">
+  <time datetime="2020-11-15T05:54:20.000Z" itemprop="datePublished">2020-11-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="Java-水平分表操作"><a href="#Java-水平分表操作" class="headerlink" title="Java 水平分表操作"></a>Java 水平分表操作</h1></blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  背景：现有一张上亿数据的表，为更好的维护表中的数据及降低风险，现对这张上亿数据的表进行水平分表的操作，即根据创建时间来生成路由信息，再根据路由信息去判断读写哪张表的数据。人们都对第一次的事物操作比较印象深刻，此次也是希望帮到我后面再进行分表操作时能够考虑的更加完备。下面的分表方法是自己第一次进行分表操作，沿用的组内大哥的分表思维及代码结构，不得不说对自己帮助是很大。<br>  特别鸣谢：感谢组内带我的大哥，觉得此方法无论在表的扩展性还是风险性上都考虑的很完备，本方法也是传授给我人生第一次的分表操作，尤其是思维上告诉了自己有哪些需要注意的细节点等，很是感激～</p>
+<h2 id="1-新建枚举类"><a href="#1-新建枚举类" class="headerlink" title="1. 新建枚举类"></a>1. 新建枚举类</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">public enum SplitDataBaseTableEnum &#123;</span><br><span class="line"></span><br><span class="line">    SPLIT_TABLE_NAME1(&quot;_stn1&quot;,1,20,new int[]&#123;&#125;,&quot;&#123;&#125;&quot;),</span><br><span class="line">    SPLIT_TABLE_NAME2(&quot;_stn2&quot;,1,10,new int[]&#123;&#125;,&quot;&#123;&#125;&quot;),</span><br><span class="line">    ;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 根据创建的当前日期进行路由key生成</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public String getRoutingKeyByDate(Date date)&#123;</span><br><span class="line">        Calendar calendar &#x3D;Calendar.getInstance();</span><br><span class="line">        calendar.setTime(date);</span><br><span class="line">        if(usingTableList.size()&#x3D;&#x3D;0)&#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;计算本日是在本年中的第几天，轮训所有正在使用中的表</span><br><span class="line">        return  usingTableList.get(calendar.get(Calendar.DAY_OF_YEAR)%usingTableList.size()).getKey();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 根据生成的路由key信息找到对应的表后缀</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public Integer getRoutingSubfixByKey(String key)&#123;</span><br><span class="line">        if(null&#x3D;&#x3D;allSplitTablelist||null&#x3D;&#x3D;allSplitTablelist.get(key))&#123;</span><br><span class="line">            return -1;&#x2F;&#x2F;此时表示是旧表，返回-1</span><br><span class="line">        &#125;</span><br><span class="line">        return allSplitTablelist.get(key).getSubfix();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * map结构的优点是可以用O(1)时间便能够通过路由key找到对应的表信息</span><br><span class="line">     * （此时此map集合应该包含了所有已经生成的路由key信息,如果该key的信息不存在的话，那么便会造成数据的丢失）</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private Map&lt;String,Table&gt; allSplitTablelist;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 此集合为可以用来生成路由key的表集合 </span><br><span class="line">     * list结构用来o(1)根据散列规则获得路由key</span><br><span class="line">     * (如果当表的状态为下线状态时，那么需要将其从该list中剔除)</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private List&lt;Table&gt; usingTableList;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 当前表路由key前缀</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private String prefix;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * @param prefixInfoKey 路由key的前缀</span><br><span class="line">     * @param startNo 所有表开始后缀</span><br><span class="line">     * @param endNo   所有表结束后缀</span><br><span class="line">     * @param notUsingTable 备用表的数据表后缀集合</span><br><span class="line">     * @param reset 如果进行了旧数据迁移需要用到该参数  1,2表-迁移到3 4,5-表迁移到6  那么需要配置&#123;3:[1,2],6:[4,5]&#125;</span><br><span class="line">     *&#x2F;</span><br><span class="line">    SplitDataBaseTableEnum(String prefixInfoKey, int startNo , int endNo, int[] notUsingTable,String reset) &#123;</span><br><span class="line">        this(prefixInfoKey,startNo,endNo,notUsingTable);</span><br><span class="line">        this.dealToResetMaps(buildToMap(reset));</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     *</span><br><span class="line">     * @param prefixInfoKey 路由key的前缀</span><br><span class="line">     * @param startNo 分表开始后缀</span><br><span class="line">     * @param endNo   分表结束后缀</span><br><span class="line">     * @param notUsingTable 不可用的数据表后缀集合</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private SplitDataBaseTableEnum(String prefixInfoKey, int startNo , int endNo, int[] notUsingTable)&#123;</span><br><span class="line">        this.prefix &#x3D; prefixInfoKey;</span><br><span class="line">        Set set &#x3D; Sets.newHashSet(Arrays.asList(ArrayUtils.toObject(notUsetable)));</span><br><span class="line">        allSplitTablelist &#x3D; Maps.newHashMapWithExpectedSize(endNo-startNo+1);</span><br><span class="line">        usingTableList &#x3D; Lists.newArrayListWithExpectedSize(endNo-startNo+1);</span><br><span class="line">        for(int i &#x3D; startNo ; i&lt;&#x3D;endNo; i++)&#123;</span><br><span class="line">            Table table &#x3D; new Table(prefixInfoKey+i,i,0);</span><br><span class="line">            allSplitTablelist.put(table.getKey(),table);</span><br><span class="line">            &#x2F;&#x2F;不可用的数据库表剔除</span><br><span class="line">            if(!set.contains(i))&#123;</span><br><span class="line">                usingTableList.add(table);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 重新调整路由key和表后缀关系</span><br><span class="line">     * @param map</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private void dealToResetMaps(Map&lt;Integer,List&lt;Integer&gt;&gt; map )&#123;</span><br><span class="line">        if(null!&#x3D;map)&#123;</span><br><span class="line">            for(Integer key:map.keySet())&#123;</span><br><span class="line">                this.resetToTableMap(map.get(key),key);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 需要将keys表所有的路由迁移到新key表中</span><br><span class="line">     * @param keys</span><br><span class="line">     * @param key</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private void resetToTableMap(List&lt;Integer&gt; keys,Integer key) &#123;</span><br><span class="line">        if(null&#x3D;&#x3D;keys||null&#x3D;&#x3D;key)&#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        for(Integer keyTemp:keys)&#123;</span><br><span class="line">            Table table &#x3D; allSplitTablelist.get(this.prefix + keyTemp);</span><br><span class="line">            table.setSubfix(key);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 此方法是根据mapStrInfo进行创建map对象</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private static Map&lt;Integer,List&lt;Integer&gt;&gt;  buildToMap(String mapStrInfo)&#123;</span><br><span class="line">       Map&lt;Integer,List&lt;Integer&gt;&gt; tempmap&#x3D; JSON.parseObject(mapStrInfo,new TypeReference&lt;Map&lt;Integer,List&lt;Integer&gt;&gt; &gt;() &#123;&#125;.getType());</span><br><span class="line">        return tempmap;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String key &#x3D; SplitDataBaseTableEnum.SPLIT_TABLE_NAME1.getRoutingKeyByDate(new Date());</span><br><span class="line">        System.out.println(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="2-Table表信息"><a href="#2-Table表信息" class="headerlink" title="2. Table表信息"></a>2. Table表信息</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class Table &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 当前表路由key</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private String key;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 当前表后缀</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private Integer subfix;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 当前表状态</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private Integer status; &#x2F;&#x2F; 0 代表可以使用，1代表不能使用</span><br><span class="line"></span><br><span class="line">    public Table(String key, Integer subfix, Integer status) &#123;</span><br><span class="line">        this.key &#x3D; key;</span><br><span class="line">        this.subfix &#x3D; subfix;</span><br><span class="line">        this.status &#x3D; status;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; getter and setter......</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="3-使用方法"><a href="#3-使用方法" class="headerlink" title="3. 使用方法"></a>3. 使用方法</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; key字段存入&quot;父关联表的字段中&quot;</span><br><span class="line">String key &#x3D; SplitDataBaseTableEnum.SPLIT_TABLE_NAME1.getRoutingKeyByDate(new Date());</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;字表根据父表的路由信息得到后缀</span><br><span class="line">Integer subfix &#x3D; SplitDataBaseTableEnum.SPLIT_TABLE_NAME1.getRoutingSubfixByKey(key);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;mapper.xml中使用</span><br><span class="line">&lt;sql id&#x3D;&quot;FROM_TABLE_NAME&quot;&gt;</span><br><span class="line">    &lt;!--路由的新表--&gt;</span><br><span class="line">    &lt;if test&#x3D;&quot;subfix !&#x3D; null and subfix &gt;0 &quot; &gt;</span><br><span class="line">        table_name_#&#123;subfix&#125;</span><br><span class="line">    &lt;&#x2F;if&gt;</span><br><span class="line">    &lt;!--未路由的老表--&gt;</span><br><span class="line">    &lt;if test&#x3D;&quot;subfix &#x3D;&#x3D; null or subfix&#x3D;&#x3D;-1 &quot; &gt;</span><br><span class="line">        table_name</span><br><span class="line">    &lt;&#x2F;if&gt;</span><br><span class="line">&lt;&#x2F;sql&gt;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>  <font color="red">人们的成长总是先模仿，而后形成自我独立的思维，代码也不例外，一段富有及其完备思维的代码，学习理解后也能帮助自己更加成长。</font></p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2020/11/27/proper-static-value/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            解决@Value不能给静态变量赋值
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2020/11/11/java-strategy1/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">java 策略模式实现(一)</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta property="og:type" content="website">
+<meta property="og:title" content="遗世、遇夕">
+<meta property="og:url" content="https://201619825.github.io/page/2/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="遗世、遇夕">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main">
+  
+    <article id="post-spring-base" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/04/10/spring-base/">spring应用上下文</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/04/10/spring-base/" class="article-date">
+  <time datetime="2021-04-10T13:28:14.000Z" itemprop="datePublished">2021-04-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        spring应用上下文
+1. 容器概念
+如果你想要一个手机,好这时候spring就给你一个手机.你想要使用的对象,spring就会给你,但是现在我们就会问那spring给的对象来自于哪里呢?
+
+spring要负责的工作很多,那么多对象的创建管理都是它在负责,那肯定会有一个地方是负责造对象的.造手机的叫工厂,而spring造对象的不叫所谓的工厂,如果叫工厂有点low,所以给出一个高大尚的名称–容器.所以现在对容器这个概念有一个新的认识了吧.
+
+容器是spring框架实现的功能的核心.(spring的核心是容器,这没有错,但是容器并不唯一,框架本身提供了多个容器的实现,具体的后面会讲).因为没有对
+        
+          <p class="article-more-link">
+            <a href="/2021/04/10/spring-base/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-self-thread" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/04/06/self-thread/">java 自定义实现线程池</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/04/06/self-thread/" class="article-date">
+  <time datetime="2021-04-06T06:57:50.000Z" itemprop="datePublished">2021-04-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java自定义实现线程池
+1. 前言
+本文将追寻ThreadPoolExecutor类的代码思路模拟jdk下线程池的执行策略，实现一个自己的线程池，文章目的主要是为了研究jdk下ThreadPoolExecutor的设计思想，理解作者为什么要这样设计，这么设计有什么好处，而不是为了重复造轮子，建议在工作中尽量使用类库，本文将实现此接口来实现一个自己的线程池，将不考虑线程池的生命周期变化，只考虑其执行任务流程，类中主要属性和构造方法如下：
+
+ 1. 编写任务类（MyTask）实现Runnable接口
+ 2. 编写线程类（MyWorker），用于执行任务，需要持有所有任务；
+ 3. 编写线程池类（
+        
+          <p class="article-more-link">
+            <a href="/2021/04/06/self-thread/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-threadpool" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/20/threadpool/">java 线程池获取返回值</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/03/20/threadpool/" class="article-date">
+  <time datetime="2021-03-20T11:47:39.000Z" itemprop="datePublished">2021-03-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java自定义线程池使用
+1. 前言
+线程池（Thread Pool）是一种基于池化思想管理线程的工具，经常出现在多线程服务器中，如MySQL。线程过多会带来额外的开销，其中包括创建销毁线程的开销、调度线程的开销等等，同时也降低了计算机的整体性能。线程池维护多个线程，等待监督管理者分配可并发执行的任务。这种做法，一方面避免了处理任务时创建销毁线程开销的代价，另一方面避免了线程数量膨胀导致的过分调度问题，保证了对内核的充分利用。而本文描述线程池是JDK中提供的ThreadPoolExecutor类。
+
+2. 线程池的使用，并获取执行返回值
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+1
+        
+          <p class="article-more-link">
+            <a href="/2021/03/20/threadpool/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-java-lamada3" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/20/java-lamada3/">JDK1.8新特性--Lamada表达式（三）</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/03/20/java-lamada3/" class="article-date">
+  <time datetime="2021-03-20T10:44:39.000Z" itemprop="datePublished">2021-03-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        JDK1.8新特性–Lamada表达式（三）
+1. 前言
+注意:Lambda表达式只支持函数式接口 也就是 只有一个抽象方法的接口，如果我们没使用一个Lambda表达式都要自己创建一个接口，这样很造成很大的不便。于是java8的工程师们已经帮我们把常用的函数式接口都帮我们定义好，拿来直接使用即可。如果不能满足你的需求，那么这时你才需要自己定义函数式接口。
+@FunctionalInterfac e: 检验接口是否是函数式接口
+
+− Lambda 允许把函数作为一个方法的参数（函数作为参数传递到方法中
+java8 内置的四大核心函数式接口
+Consumer 消费型接口
+void accept(T
+        
+          <p class="article-more-link">
+            <a href="/2021/03/20/java-lamada3/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-java-lamada2" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/20/java-lamada2/">JDK1.8新特性--Lamada表达式（二）</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/03/20/java-lamada2/" class="article-date">
+  <time datetime="2021-03-20T10:44:34.000Z" itemprop="datePublished">2021-03-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        JDK1.8新特性–Lamada表达式（二）
+前言
+Lamada操作符 ->
+
+左侧：Lamada表达式的参数列表
+右侧：Lamada表达式所要实现的功能
+Lamada表达式需要函数式接口的支持
+一、
+1: 无参数，无返回值
+2: 有一个参数，无返回值
+3: 若只有一个参数，小括号可以省略不写
+4: 有两个以上的参数，有返回值，并且Lamada体中有多条语句,必须使用大括号
+5: 若有两个参数，有返回值，并且Lamada体中只有一条语句，return和大括号可以不写
+6: Lamada表达式的数据类型可以省略不写，因为JVM编译器可以通过上下文推断出数据类型，如果两个以上参数有一个写了，必须都
+        
+          <p class="article-more-link">
+            <a href="/2021/03/20/java-lamada2/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-java-lamada1" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/20/java-lamada1/">JDK1.8新特性--Lamada表达式（一）</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/03/20/java-lamada1/" class="article-date">
+  <time datetime="2021-03-20T10:44:28.000Z" itemprop="datePublished">2021-03-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        JDK1.8新特性–Lamada表达式（一）
+前言
+ Lambda 是一个匿名函数，我们可以把 Lambda表达式理解为是一段可以传递的代码（将代码像数据一样进行传递）。可以写出更简洁、更灵活的代码。作为一种更紧凑的代码风格，使Java的语言表达能力得到了提升。
+Lambda表达式语法：Lambda表达式在Java 语言中引入了一个新的语法元素和操作符。这个操作符为 “->” ， 该操作符被称为 Lambda 操作符或剪头操作符。它将 Lambda 分为 两个部分：
+左侧： 指定了 Lambda 表达式需要的所有参数
+右侧： 指定了 Lambda 体，即 Lambda 表达式要执行的功能。
+以
+        
+          <p class="article-more-link">
+            <a href="/2021/03/20/java-lamada1/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-concurrent-lock" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/06/concurrent-lock/">java 添加二级缓存并实现并发锁</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/03/06/concurrent-lock/" class="article-date">
+  <time datetime="2021-03-05T16:31:13.000Z" itemprop="datePublished">2021-03-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        java 添加二级缓存并实现并发锁
+1. 前言
+需求：高并发场景下，使用redis作为我们提供对外服务接口的数据读写已经是主流，但大量的流量打进来的时候，有时候直接读取redis，并将redis的数据进行组装返回给服务的上游调用方，仍会给服务带来不小的压力，目前有一种方案，我们可以将组装好的数据，作为前置缓存存储至redis中，来作为二级缓存使用，这可以大大提升我们接口的服务质量，那么我们在控制二级缓存的时候，便可以设置二级缓存的生效时间为5分钟（当然这里不能都是5分钟，要给个合理的随机数,比如3-10分钟，避免缓存雪崩），并且控制二级缓存的写，这里我们可以使用另外的一个空key，来作为二级缓
+        
+          <p class="article-more-link">
+            <a href="/2021/03/06/concurrent-lock/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-enum-senior" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/03/05/enum-senior/">java 枚举类高级使用</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/03/05/enum-senior/" class="article-date">
+  <time datetime="2021-03-05T15:46:48.000Z" itemprop="datePublished">2021-03-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        java 枚举类高级使用
+前言
+枚举是一种规范它规范了参数的形式，这样就可以不用考虑类型的不匹配并且显式的替代了int型参数可能带来的模糊概念 枚举像一个类，又像一个数组。Enum作为Sun全新引进的一个关键字，看起来很象是特殊的class, 它也可以有自己的变量，可以定义自己的方法，可以实现一个或者多个接口。 在涉及到使用大量需要标记的内容的时候,我们一般选择使用枚举类型来快速定义内容,但是不仅仅是因为快速,同时使用枚举类型更加的安全。下面先看两个典型的枚举类的例子：
+public enum Direction{EAST,SOUTH,WEST,NORTH};
+public enum Posi
+        
+          <p class="article-more-link">
+            <a href="/2021/03/05/enum-senior/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-anno-reflect" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/02/08/anno-reflect/">java 策略模式实现(三)</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/02/08/anno-reflect/" class="article-date">
+  <time datetime="2021-02-08T12:36:38.000Z" itemprop="datePublished">2021-02-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        java 基于注解策略模式实现(三)
+前言
+定义：在策略模式（Strategy Pattern）中，一个类的行为或其算法可以在运行时更改，这种类型的设计模式属于行为型模式。Strategy的意思是“策略”，指的是与敌军对垒时行军作战的方法。在策略模式中，我们创建各种表示策略的对象和一个行为随着策略对象改变而改变的context对象。策略对象改变context对象的执行算法。定义一系列的算法,把策略对象一个个封装起来, 并且使它们可相互替换。主要解决在有多种算法相似的情况下，使用 if…else 所带来的复杂和难以维护。
+场景：根据自定义注解+反射机制实现策略模式的使用
+
+1. 新建每个小场景必
+        
+          <p class="article-more-link">
+            <a href="/2021/02/08/anno-reflect/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-java-strategy2" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/02/08/java-strategy2/">java 策略模式实现(二)</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2021/02/08/java-strategy2/" class="article-date">
+  <time datetime="2021-02-08T02:58:01.000Z" itemprop="datePublished">2021-02-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        java 策略模式实现(二)
+前言
+定义：在策略模式（Strategy Pattern）中，一个类的行为或其算法可以在运行时更改，这种类型的设计模式属于行为型模式。Strategy的意思是“策略”，指的是与敌军对垒时行军作战的方法。在策略模式中，我们创建各种表示策略的对象和一个行为随着策略对象改变而改变的context对象。策略对象改变context对象的执行算法。定义一系列的算法,把策略对象一个个封装起来, 并且使它们可相互替换。主要解决在有多种算法相似的情况下，使用 if…else 所带来的复杂和难以维护。
+场景：一个大业态场景下划分出许多小场景，每个小场景可能执行的动作不一致，但最终是完
+        
+          <p class="article-more-link">
+            <a href="/2021/02/08/java-strategy2/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">&amp;laquo; 上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">下一页 &amp;raquo;</a>
+  </nav>
+
+
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

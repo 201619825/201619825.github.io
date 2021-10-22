@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>mysql锁讲解笔记 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="mysql锁讲解笔记 前言. 基础知识  * mysql在5.5之前默认使用 MyISAM 存储引擎，之后使用 InnoDB  * MyISAM 操作数据都是使用的表锁，你更新一条记录就要锁整个表，导致性能较低，并发不高，当然同时它也不会存在死锁问题  * InnoDB ：1. 支持事务； 2. 采用了行级锁。即需要修改哪行，就可以只锁定哪行  * InnoDB 行锁是通过给索引项加锁实现的，如果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql锁讲解笔记">
+<meta property="og:url" content="https://201619825.github.io/2020/12/04/mysql-lock/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="mysql锁讲解笔记 前言. 基础知识  * mysql在5.5之前默认使用 MyISAM 存储引擎，之后使用 InnoDB  * MyISAM 操作数据都是使用的表锁，你更新一条记录就要锁整个表，导致性能较低，并发不高，当然同时它也不会存在死锁问题  * InnoDB ：1. 支持事务； 2. 采用了行级锁。即需要修改哪行，就可以只锁定哪行  * InnoDB 行锁是通过给索引项加锁实现的，如果">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-04T12:36:12.000Z">
+<meta property="article:modified_time" content="2020-12-07T03:44:58.381Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-mysql-lock" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      mysql锁讲解笔记
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/12/04/mysql-lock/" class="article-date">
+  <time datetime="2020-12-04T12:36:12.000Z" itemprop="datePublished">2020-12-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="mysql锁讲解笔记"><a href="#mysql锁讲解笔记" class="headerlink" title="mysql锁讲解笔记"></a>mysql锁讲解笔记</h1></blockquote>
+<h2 id="前言-基础知识"><a href="#前言-基础知识" class="headerlink" title="前言. 基础知识"></a>前言. 基础知识</h2><ul>
+<li>mysql在5.5之前默认使用 MyISAM 存储引擎，之后使用 InnoDB</li>
+<li>MyISAM 操作数据都是使用的表锁，你更新一条记录就要锁整个表，导致性能较低，并发不高，当然同时它也不会存在死锁问题</li>
+<li>InnoDB ：1. 支持事务； 2. 采用了行级锁。即需要修改哪行，就可以只锁定哪行</li>
+<li>InnoDB 行锁是通过给索引项加锁实现的，如果没有索引，InnoDB 会通过隐藏的聚簇索引来对记录加锁</li>
+<li>行级锁并不是直接锁记录，而是锁索引，如果一条sql 语句操作了主键索引，Mysql 就会锁定这条主键索引；如果一条语句操作了非主键索引，MySQL会先锁定该非主键索引，再锁定相关的主键索引。</li>
+</ul>
+<ul>
+<li>表级锁–锁定整个表</li>
+<li>页级锁–锁定整页</li>
+<li>行级锁–锁定一行</li>
+<li>共享锁–S锁，MyISAM 叫做读锁</li>
+<li>排他锁–X锁，MyISAM 叫做写锁</li>
+<li>悲观锁–抽象性，不真实存在这个锁</li>
+<li>乐观锁–抽象性，不真实存在这个锁</li>
+</ul>
+<h2 id="1-共享锁与排它锁"><a href="#1-共享锁与排它锁" class="headerlink" title="1. 共享锁与排它锁"></a>1. 共享锁与排它锁</h2><ol>
+<li><strong>数据库增删改默认加排它锁，查询不加任何锁</strong><ul>
+<li>共享锁–对某一资源加共享锁，自身可以读该资源，其他人也可以读该资源（也可以再继续加共享锁，即 共享锁可多个共存），但无法修改。要想修改就必须等所有共享锁都释放完之后。</li>
+</ul>
+<strong>语法</strong><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from table lock in share mode</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>排它锁–对某一资源加排他锁，自身可以进行增删改查，其他人无法进行任何操作。</li>
+</ul>
+<strong>语法</strong><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from table for update</span><br></pre></td></tr></table></figure></div></li>
+<li><strong>样例说明： 这里用T1代表一个数据库执行请求，T2代表另一个请求，也可以理解为T1为一个线程，T2 为另一个线程。以下例子均假设查询花很长时间</strong></li>
+</ol>
+<ul>
+<li><p>样例1：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">T1:select * from table lock in share mode</span><br><span class="line"></span><br><span class="line">T2:update table set column_1&#x3D;&#39;hello word&#39;</span><br></pre></td></tr></table></figure></div>
+<p>  过程：<br>  T1运行（并加共享锁)<br>  T2运行<br>  If T1还没执行完<br>  ..T2等……<br>  else 锁被释放<br>  ..T2执行……<br>  end if</p>
+<p>  说明：T2 之所以要等，是因为 T2 在执行 update 前，试图对 table 表加一个排他锁，<br>  而数据库规定同一资源上不能同时共存共享锁和排他锁。所以 T2 必须等 T1 执行完，<br>  释放了共享锁，才能加上排他锁，然后才能开始执行 update 语句。  </p>
+</li>
+</ul>
+<ul>
+<li><p>样例2:</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">T1:select * from table lock in share mode</span><br><span class="line"></span><br><span class="line">T2:select * from table lock in share mode</span><br></pre></td></tr></table></figure></div>
+<p>  过程：<br>  这里T2不用等待T1执行完，而是可以马上执行</p>
+<p>  说明：T1运行，则 table 被加锁，比如叫lockA，T2运行，再对 table 加一个共享锁，比如叫lockB，<br>  两个锁是可以同时存在于同一资源上的（比如同一个表上）。这被称为共享锁与共享锁兼容。<br>  这意味着共享锁不阻止其它人同时读资源，但阻止其它人修改资源。    </p>
+</li>
+</ul>
+<ul>
+<li>样例3:<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">T1:select * from table lock in share mode</span><br><span class="line"></span><br><span class="line">T2:select * from table lock in share mode</span><br><span class="line"></span><br><span class="line">T3:update table set column_1&#x3D;&#39;hello&#39;</span><br></pre></td></tr></table></figure></div>
+  说明：T2 不用等 T1 运行完就能运行，T3 却要等 T1 和 T2 都运行完才能运行。因为 T3 必须等 T1 和 T2 的共享锁全部释放才能进行加排他锁然后执行 update 操作。</li>
+</ul>
+<ul>
+<li><p>样例4:死锁的发生</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">T1:begin tran</span><br><span class="line"></span><br><span class="line"> select * from table lock in share mode</span><br><span class="line"></span><br><span class="line"> update table set column_1&#x3D;&#39;hello&#39;</span><br><span class="line"></span><br><span class="line">T2:begin tran</span><br><span class="line"></span><br><span class="line"> select * from table lock in share mode</span><br><span class="line"></span><br><span class="line"> update table set column_1&#x3D;&#39;world&#39;</span><br></pre></td></tr></table></figure></div>
+
+<p>  说明：假设 T1 和 T2 同时达到 select，T1 对 table 加共享锁，T2 也对 table 加共享锁，<br>  当 T1 的 select 执行完，准备执行 update 时，根据锁机制，T1 的共享锁需要升级到排他锁<br>  才能执行接下来的 update。在升级排他锁前，必须等 table 上的其它共享锁（T2）释放，同理，<br>  T2 也在等 T1 的共享锁释放。于是死锁产生了。</p>
+</li>
+</ul>
+<ul>
+<li>样例5:<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">T1:begin tran</span><br><span class="line"></span><br><span class="line"> update table set column_1&#x3D;&#39;hello&#39; where id&#x3D;10</span><br><span class="line"></span><br><span class="line">T2:begin tran</span><br><span class="line"></span><br><span class="line"> update table set column_1&#x3D;&#39;world&#39; where id&#x3D;20</span><br></pre></td></tr></table></figure></div>
+  说明：<ol>
+<li>如果id是主键（默认有主键索引），那么T1会一下子找到该条记录(id=10的记录），<br>然后对该条记录加排他锁，T2，同样，一下子通过索引定位到记录，然后对id=20的记录<br>加排他锁，这样T1和T2各更新各的，互不影响。T2也不需要等。  </li>
+<li>如果id是普通的一列，没有索引。那么当T1对id=10这一行加排他锁后，<br>T2为了找到id=20，需要对全表扫描。但因为T1已经为一条记录加了排他锁，<br>导致T2的全表扫描进行不下去（其实是因为T1加了排他锁，数据库默认会为该表加意向锁，<br>T2要扫描全表，就得等该意向锁释放，也就是T1执行完成），就导致T2等待。   </li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>样例6:解决死锁<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">T1:begin tran</span><br><span class="line"></span><br><span class="line"> select * from table for update</span><br><span class="line"></span><br><span class="line"> update table set column_1&#x3D;&#39;hello&#39;</span><br><span class="line"></span><br><span class="line">T2:begin tran</span><br><span class="line"></span><br><span class="line"> select * from table for update</span><br><span class="line"></span><br><span class="line"> update table set column_1&#x3D;&#39;world&#39;</span><br></pre></td></tr></table></figure></div>
+  说明：当 T1 的 select 执行时，直接对表加上了排他锁，T2 在执行 select 时，<br>  就需要等 T1 事物完全执行完才能执行。排除了死锁发生。但当第三个 user 过来想<br>  执行一个查询语句时，也因为排他锁的存在而不得不等待，第四个、第五个 user 也会<br>  因此而等待。在大并发情况下，让大家等待显得性能就太友好了。  </li>
+</ul>
+<h2 id="特别鸣谢"><a href="#特别鸣谢" class="headerlink" title="特别鸣谢"></a><strong>特别鸣谢</strong></h2><p>此文参考<a href="https://blog.csdn.net/samjustin1/article/details/52210125" target="_blank" rel="noopener">CSDN</a></p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2021/02/08/java-strategy2/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            java 策略模式实现(二)
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2020/11/28/anno-transaction/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Java事务失效场景及自定义注解实现事务</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2021 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>
