@@ -17,18 +17,18 @@
 <meta property="og:site_name" content="遗世、遇夕">
 <meta property="og:description" content="MQ的使用及介绍 1. 前言 MQ：MessageQueue，消息队列。队列是一种FIFO先进先出的数据结构，消息由生产者发送到MQ进行排队，然后由消费者对消息进行处理，QQ，微信就是典型的MQ场景。 MQ的作用主要由三个方面：   * 异步：能提高系统的响应速度和吞吐量。  * 解耦：服务间解耦，可以减少服务间的影响，提高系统的稳定性和可扩展性（例如通过MQ消息，java服务去使用python的">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://201619825.github.io/2021/07/03/mq-info1/cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210917185222.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210917185222.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210703/20210703174658.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210703/20210703175421.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210703/20210703180647.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210703/20210703184522.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210703/20210703184640.png">
 <meta property="article:published_time" content="2021-07-03T09:08:54.000Z">
-<meta property="article:modified_time" content="2021-09-17T12:11:26.379Z">
+<meta property="article:modified_time" content="2021-10-28T13:00:10.148Z">
 <meta property="article:author" content="遗世、遇夕">
 <meta property="article:tag" content="中间件">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://201619825.github.io/2021/07/03/mq-info1/cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210917185222.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210917185222.png">
   
     <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
   
@@ -121,7 +121,7 @@
 <li><p>RabbitMQ<br>优点：消息可靠性高，功能全面。<br>缺点：吞吐量比较低，消息积累会严重影响性能。<br>使用场景：小规模场景。</p>
 </li>
 <li><p>RocketMQ<br>优点：高吞吐、高性能、高可用、功能非常全面。<br>缺点：开源版不如云上商业版，客户端只支持java。<br>使用场景：几乎全场景。</p>
-<img src="cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210917185222.png">
+<img src="//cdn.jsdelivr.net/gh/201619825/cdn/20210903=9/20210917185222.png">
 Topic是逻辑概念，对于RocketMQ，一个Topic可以分布在各个Broker上，把一个Topic分布在一个Broker上的子集定义为一个Topic分片，其实就是在某一broke上一个topic的部分数据.
 Queue 存在的意义：每个Topic分片等分的Queue的数量可以不同，由用户在创建Topic时指定, 是消费负载均衡过程中资源分配的基本单元.
 
