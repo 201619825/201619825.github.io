@@ -18,7 +18,7 @@
 <meta property="og:description" content="一键脚本搭建v2ray+nginx+ws+tls 准备工作  * 国外vps：ubuntu18+ centos7+ * 推荐https:&#x2F;&#x2F;hostvds.com最低0.79美刀一月     * 国外域名：域名解析添加个A记录          这里以centos7为操作，所有操作都在root账户下操作，请先执行sudo -s 安装curl 1   $ yum update -y &amp;&amp; yum i">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-03-31T09:37:47.000Z">
-<meta property="article:modified_time" content="2020-04-03T07:04:34.000Z">
+<meta property="article:modified_time" content="2022-02-05T14:37:25.274Z">
 <meta property="article:author" content="遗世、遇夕">
 <meta name="twitter:card" content="summary">
   
@@ -103,7 +103,7 @@
 </ul>
 <h3 id="这里以centos7为操作，所有操作都在root账户下操作，请先执行sudo-s"><a href="#这里以centos7为操作，所有操作都在root账户下操作，请先执行sudo-s" class="headerlink" title="这里以centos7为操作，所有操作都在root账户下操作，请先执行sudo  -s"></a>这里以centos7为操作，所有操作都在root账户下操作，请先执行sudo  -s</h3><h4 id="安装curl"><a href="#安装curl" class="headerlink" title="安装curl"></a>安装curl</h4><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum update -y &amp;&amp; yum install curl -y</span><br></pre></td></tr></table></figure></div>
 
-<h4 id="使用一键脚本：Vmess-websocket-TLS-Nginx-Website"><a href="#使用一键脚本：Vmess-websocket-TLS-Nginx-Website" class="headerlink" title="使用一键脚本：Vmess+websocket+TLS+Nginx+Website"></a>使用一键脚本：Vmess+websocket+TLS+Nginx+Website</h4><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bash &lt;(curl -L -s https://raw.githubusercontent.com/201619825/V2Ray_ws-tls_bash_onekey/master/install.sh) | tee v2ray_ins.log</span><br></pre></td></tr></table></figure></div>
+<h4 id="使用一键脚本：Vmess-websocket-TLS-Nginx-Website"><a href="#使用一键脚本：Vmess-websocket-TLS-Nginx-Website" class="headerlink" title="使用一键脚本：Vmess+websocket+TLS+Nginx+Website"></a>使用一键脚本：Vmess+websocket+TLS+Nginx+Website</h4><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ bash &lt;(curl -sL https://s.hijk.art/v2ray.sh)</span><br><span class="line"><span class="comment">##trojan网址</span></span><br><span class="line"><span class="comment">##bash &lt;(curl -sL https://raw.githubusercontent.com/hijkpw/scripts/master/trojan-go.sh)</span></span><br><span class="line"><span class="comment">#https://vpsgongyi.com/p/6025/#:~:text=%E5%9B%A0%E5%AE%98%E6%96%B9%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%83%BD%E6%AF%94%E8%BE%83%E7%AE%80%E9%99%8B%EF%BC%8C%20trojan%20windows%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8Clash%20for%20Windows%EF%BC%8Ctrojan%20mac%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8ClashX%EF%BC%8C%E5%AE%89%E5%8D%93%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%20Clash,for%20Android%20%E3%80%82%20%E5%A6%82%E6%9E%9C%E6%98%AF%20trojan-go%20%EF%BC%8C%E8%AF%B7%E4%BD%BF%E7%94%A8%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%9A%84Qv2ray%EF%BC%8C%E4%BD%86%E9%9C%80%E8%A6%81%E5%8D%95%E7%8B%AC%E4%B8%8B%E8%BD%BD%20trojan-go%E6%8F%92%E4%BB%B6%20%E3%80%82</span></span><br></pre></td></tr></table></figure></div>
 <p>选择ws+tls<br>选择TLS1.1 TLS1.2 and TLS1.3（兼容模式）</p>
 <h4 id="启动V2ray"><a href="#启动V2ray" class="headerlink" title="启动V2ray"></a>启动V2ray</h4><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ systemctl start v2ray</span><br></pre></td></tr></table></figure></div>
 
@@ -216,7 +216,7 @@ gitment.render('gitmentContainer')
   <div class="widget-box">
     <h3 class="widget-title">时光轴</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
     </div>
   </div>
 
@@ -226,6 +226,10 @@ gitment.render('gitmentContainer')
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/02/09/java-jvm-config/">java-jvm-config</a>
+          </li>
         
           <li>
             <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
@@ -241,10 +245,6 @@ gitment.render('gitmentContainer')
         
           <li>
             <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
-          </li>
-        
-          <li>
-            <a href="/2021/06/22/elsticSearch/">ElasticSearch 概念及使用</a>
           </li>
         
       </ul>
