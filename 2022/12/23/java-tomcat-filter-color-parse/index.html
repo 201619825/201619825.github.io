@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>java filter 解析网关入参 | 遗世、遇夕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Java filter 解析网关入参 1. 前言 OncePerRequestFilter 一个Filter在对一次客户端请求request的处理中，常识上的理解，应该只被应用一次。这种理解很直观，也很合理，然而实际情况并非如此。Spring给出的解决方案是OncePerRequestFilter。如果想让一个Filter在一次请求处理的过程中只被应用一次，就让这个Filter继承自OncePer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java filter 解析网关入参">
+<meta property="og:url" content="https://201619825.github.io/2022/12/23/java-tomcat-filter-color-parse/index.html">
+<meta property="og:site_name" content="遗世、遇夕">
+<meta property="og:description" content="Java filter 解析网关入参 1. 前言 OncePerRequestFilter 一个Filter在对一次客户端请求request的处理中，常识上的理解，应该只被应用一次。这种理解很直观，也很合理，然而实际情况并非如此。Spring给出的解决方案是OncePerRequestFilter。如果想让一个Filter在一次请求处理的过程中只被应用一次，就让这个Filter继承自OncePer">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-23T02:44:58.000Z">
+<meta property="article:modified_time" content="2022-12-23T03:13:03.460Z">
+<meta property="article:author" content="遗世、遇夕">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="遗世、遇夕" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/highlight.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >档案</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-java-tomcat-filter-color-parse" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      java filter 解析网关入参
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2022/12/23/java-tomcat-filter-color-parse/" class="article-date">
+  <time datetime="2022-12-23T02:44:58.000Z" itemprop="datePublished">2022-12-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        <blockquote>
+<h1 id="Java-filter-解析网关入参"><a href="#Java-filter-解析网关入参" class="headerlink" title="Java filter 解析网关入参"></a>Java filter 解析网关入参</h1></blockquote>
+<h2 id="1-前言-OncePerRequestFilter"><a href="#1-前言-OncePerRequestFilter" class="headerlink" title="1. 前言 OncePerRequestFilter"></a>1. 前言 OncePerRequestFilter</h2><p>一个Filter在对一次客户端请求request的处理中，常识上的理解，应该只被应用一次。这种理解很直观，也很合理，然而实际情况并非如此。Spring给出的解决方案是OncePerRequestFilter。如果想让一个Filter在一次请求处理的过程中只被应用一次，就让这个Filter继承自OncePerRequestFilter。Spring自身提供的这类的Filter,都继承自该过滤器基类。</p>
+<ol>
+<li>解析网关body中入参，并继承HttpServletRequestWrapper修改入参传入</li>
+<li>继承HttpServletRequestWrapper修改入参是因为getParameterMap是以流的方式，只能被读取一次</li>
+</ol>
+<h2 id="2-pom依赖"><a href="#2-pom依赖" class="headerlink" title="2. pom依赖"></a>2. pom依赖</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">&lt;packaging&gt;jar&lt;&#x2F;packaging&gt;</span><br><span class="line"></span><br><span class="line">&lt;properties&gt;</span><br><span class="line">    &lt;spring.boot.autoconfigure.version&gt;2.7.3&lt;&#x2F;spring.boot.autoconfigure.version&gt;</span><br><span class="line">    &lt;laf.config.version&gt;1.0.15&lt;&#x2F;laf.config.version&gt;</span><br><span class="line">    &lt;spring.webmvc.version&gt;5.1.5.RELEASE&lt;&#x2F;spring.webmvc.version&gt;</span><br><span class="line">    &lt;spring.web.version&gt;5.1.5.RELEASE&lt;&#x2F;spring.web.version&gt;</span><br><span class="line">    &lt;tomcat.embed.core.version&gt;9.0.16&lt;&#x2F;tomcat.embed.core.version&gt;</span><br><span class="line">    &lt;abpower.version&gt;2.1.1&lt;&#x2F;abpower.version&gt;</span><br><span class="line">    &lt;fastjson.version&gt;2.0.19&lt;&#x2F;fastjson.version&gt;</span><br><span class="line">&lt;&#x2F;properties&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependencies&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-autoconfigure&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;spring.boot.autoconfigure.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">        &lt;exclusions&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;artifactId&gt;spring-context&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;groupId&gt;org.springframework&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;&#x2F;exclusion&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;artifactId&gt;spring-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;groupId&gt;org.springframework&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;&#x2F;exclusion&gt;</span><br><span class="line">        &lt;&#x2F;exclusions&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-webmvc&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;spring.webmvc.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;artifactId&gt;fastjson&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;groupId&gt;com.alibaba&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;fastjson.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-web&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;spring.web.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.apache.tomcat.embed&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;tomcat-embed-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;tomcat.embed.core.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;!--   仅使用DUCC，参与编译，不参与打包     --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.jd.laf.config&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;laf-config-client-jd&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;laf.config.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">        &lt;exclusions&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;artifactId&gt;fastjson&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;groupId&gt;com.alibaba&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;&#x2F;exclusion&gt;</span><br><span class="line">        &lt;&#x2F;exclusions&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;com.jd&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;ABPower&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;$&#123;abpower.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;exclusions&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;groupId&gt;org.slf4j&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;slf4j-log4j12&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;&#x2F;exclusion&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;groupId&gt;log4j&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;log4j&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;&#x2F;exclusion&gt;</span><br><span class="line">            &lt;exclusion&gt;</span><br><span class="line">                &lt;groupId&gt;ch.qos.logback&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;logback-classic&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;&#x2F;exclusion&gt;</span><br><span class="line">        &lt;&#x2F;exclusions&gt;</span><br><span class="line">    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;dependencies&gt;</span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;maven-compiler-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;source&gt;8&lt;&#x2F;source&gt;</span><br><span class="line">                &lt;target&gt;8&lt;&#x2F;target&gt;</span><br><span class="line">            &lt;&#x2F;configuration&gt;</span><br><span class="line">        &lt;&#x2F;plugin&gt;</span><br><span class="line">    &lt;&#x2F;plugins&gt;</span><br><span class="line">&lt;&#x2F;build&gt;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="3-ColorServletFilter-extends-OncePerRequestFilter"><a href="#3-ColorServletFilter-extends-OncePerRequestFilter" class="headerlink" title="3. ColorServletFilter extends OncePerRequestFilter"></a>3. ColorServletFilter extends OncePerRequestFilter</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line">@Order(1)</span><br><span class="line">@WebFilter(urlPatterns &#x3D; &#123;&quot;&#x2F;*&quot;&#125;, asyncSupported &#x3D; true)</span><br><span class="line">public class ColorServletFilter extends OncePerRequestFilter &#123;</span><br><span class="line">    @Override</span><br><span class="line">    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            String body &#x3D; request.getParameter(&quot;body&quot;);</span><br><span class="line"></span><br><span class="line">            if (StringUtils.isBlank(body)) &#123;</span><br><span class="line">                filterChain.doFilter(request, response);</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            ModifiableHttpServletRequestWrapper wrapper &#x3D; new ModifiableHttpServletRequestWrapper(request);</span><br><span class="line"></span><br><span class="line">            Map&lt;String, Object&gt; colorParams &#x3D; JSON.parseObject(body);</span><br><span class="line">            if (colorParams &#x3D;&#x3D; null || colorParams.isEmpty()) &#123;</span><br><span class="line">                filterChain.doFilter(request, response);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            parseBodyParamToModifiableWrapper(wrapper, colorParams);</span><br><span class="line"></span><br><span class="line">            filterChain.doFilter(wrapper, response);</span><br><span class="line">        &#125; catch (Throwable e) &#123;</span><br><span class="line">            filterChain.doFilter(request, response);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 解析body参数</span><br><span class="line">     * @param wrapper</span><br><span class="line">     * @param colorParams</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private void parseBodyParamToModifiableWrapper(ModifiableHttpServletRequestWrapper wrapper, Map&lt;String, Object&gt; colorParams) &#123;</span><br><span class="line">        Queue&lt;RequestJsonParam&gt; queue &#x3D; new LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        for (Map.Entry&lt;String, Object&gt; entry : colorParams.entrySet()) &#123;</span><br><span class="line">            if (entry.getValue() instanceof JSONObject || entry.getValue() instanceof JSONArray) &#123;</span><br><span class="line">                queue.add(new RequestJsonParam.Builder().key(entry.getKey()).value(entry.getValue()).build());</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            wrapper.setParameter(entry.getKey(), entry.getValue().toString());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        while(!queue.isEmpty()) &#123;</span><br><span class="line">            RequestJsonParam requestJsonParam &#x3D; queue.poll();</span><br><span class="line">            Object value &#x3D; requestJsonParam.getValue();</span><br><span class="line"></span><br><span class="line">            if (Objects.isNull(value)) &#123;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            String parentKey &#x3D; getKey(requestJsonParam);</span><br><span class="line"></span><br><span class="line">            if (value instanceof JSONObject) &#123;</span><br><span class="line">                JSONObject jsonObject &#x3D; (JSONObject) value;</span><br><span class="line"></span><br><span class="line">                for (Map.Entry&lt;String, Object&gt; entry : jsonObject.entrySet()) &#123;</span><br><span class="line">                    RequestJsonParam param &#x3D; new RequestJsonParam.Builder()</span><br><span class="line">                            .parentKey(parentKey)</span><br><span class="line">                            .key(entry.getKey())</span><br><span class="line">                            .value(entry.getValue())</span><br><span class="line">                            .build();</span><br><span class="line">                    queue.add(param);</span><br><span class="line">                &#125;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            if (value instanceof JSONArray) &#123;</span><br><span class="line">                JSONArray jsonArray &#x3D; (JSONArray) value;</span><br><span class="line">                for (int i &#x3D; 0; i &lt; jsonArray.size(); i ++) &#123;</span><br><span class="line">                    RequestJsonParam param &#x3D; new RequestJsonParam.Builder()</span><br><span class="line">                            .parentKey(parentKey)</span><br><span class="line">                            .index(i)</span><br><span class="line">                            .value(jsonArray.get(i))</span><br><span class="line">                            .build();</span><br><span class="line">                    queue.add(param);</span><br><span class="line">                &#125;</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            wrapper.setParameter(getKey(requestJsonParam), value.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 获取key</span><br><span class="line">     * 拼接当前字段key，object类型类似：skuInfo.skuId，array类型类似：skuList[0].skuId</span><br><span class="line">     * @param requestJsonParam</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private String getKey(RequestJsonParam requestJsonParam) &#123;</span><br><span class="line">        if (StringUtils.isBlank(requestJsonParam.getParentKey()) &amp;&amp; StringUtils.isBlank(requestJsonParam.getKey()) &amp;&amp; Objects.isNull(requestJsonParam.getIndex())) &#123;</span><br><span class="line">            throw new IllegalArgumentException();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (StringUtils.isNotBlank(requestJsonParam.getKey())) &#123;</span><br><span class="line">            if (StringUtils.isBlank(requestJsonParam.getParentKey())) &#123;</span><br><span class="line">                return requestJsonParam.getKey();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            return requestJsonParam.getParentKey() + &quot;.&quot; + requestJsonParam.getKey();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (Objects.nonNull(requestJsonParam.getIndex())) &#123;</span><br><span class="line">            String key &#x3D; &quot;[&quot; + requestJsonParam.getIndex() + &quot;]&quot;;</span><br><span class="line">            if (StringUtils.isBlank(requestJsonParam.getParentKey())) &#123;</span><br><span class="line">                return key;</span><br><span class="line">            &#125;</span><br><span class="line">            return requestJsonParam.getParentKey() + requestJsonParam.getKey();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 不会走到这里</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="4-ModifiableHttpServletRequestWrapper-extends-HttpServletRequestWrapper"><a href="#4-ModifiableHttpServletRequestWrapper-extends-HttpServletRequestWrapper" class="headerlink" title="4. ModifiableHttpServletRequestWrapper extends HttpServletRequestWrapper"></a>4. ModifiableHttpServletRequestWrapper extends HttpServletRequestWrapper</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">public class ModifiableHttpServletRequestWrapper extends HttpServletRequestWrapper &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * parameterMap</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private Map&lt;String, String[]&gt; parameterMap;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Constructs a request object wrapping the given request.</span><br><span class="line">     *</span><br><span class="line">     * @param request The request to wrap</span><br><span class="line">     * @throws IllegalArgumentException if the request is null</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public ModifiableHttpServletRequestWrapper(HttpServletRequest request) &#123;</span><br><span class="line">        super(request);</span><br><span class="line">        parameterMap &#x3D; new ConcurrentHashMap&lt;&gt;(super.getParameterMap());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 优先取自己的，如果自己没有则拿被包装的request的</span><br><span class="line">     * @param name</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Override</span><br><span class="line">    public String getParameter(String name) &#123;</span><br><span class="line">        String[] values &#x3D; parameterMap.get(name);</span><br><span class="line"></span><br><span class="line">        if (values &#x3D;&#x3D; null &amp;&amp; values.length &#x3D;&#x3D; 0) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return values[0];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * getParameterMap</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Override</span><br><span class="line">    public Map&lt;String, String[]&gt; getParameterMap() &#123;</span><br><span class="line">        return parameterMap;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * getParameterNames</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Override</span><br><span class="line">    public Enumeration&lt;String&gt; getParameterNames() &#123;</span><br><span class="line">        return Collections.enumeration(parameterMap.keySet());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * getParameterValues</span><br><span class="line">     *</span><br><span class="line">     * @param name</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Override</span><br><span class="line">    public String[] getParameterValues(String name) &#123;</span><br><span class="line">        String[] values &#x3D; parameterMap.get(name);</span><br><span class="line">        if (values &#x3D;&#x3D; null || values.length &#x3D;&#x3D; 0) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        return values;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 设置参数</span><br><span class="line">     * @param name</span><br><span class="line">     * @param values</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void setParameter(String name, String... values) &#123;</span><br><span class="line">        parameterMap.put(name, values);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * removeParameter</span><br><span class="line">     *</span><br><span class="line">     * @param name</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void removeParameter(String name) &#123;</span><br><span class="line">        this.parameterMap.remove(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="6-定义RequestJsonParam作为解析参数时的临时容器"><a href="#6-定义RequestJsonParam作为解析参数时的临时容器" class="headerlink" title="6. 定义RequestJsonParam作为解析参数时的临时容器"></a>6. 定义RequestJsonParam作为解析参数时的临时容器</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line">public class RequestJsonParam &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * SkuInfo.skuId时 SkuInfo.</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private String parentKey;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * SkuInfo.skuId时 skuId</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private String key;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 数组时下标</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private Integer index;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * value</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private Object value;</span><br><span class="line"></span><br><span class="line">    public RequestJsonParam() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public RequestJsonParam(String parentKey, String key, Integer index, Object value) &#123;</span><br><span class="line">        this.parentKey &#x3D; parentKey;</span><br><span class="line">        this.key &#x3D; key;</span><br><span class="line">        this.index &#x3D; index;</span><br><span class="line">        this.value &#x3D; value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getParentKey() &#123;</span><br><span class="line">        return parentKey;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setParentKey(String parentKey) &#123;</span><br><span class="line">        this.parentKey &#x3D; parentKey;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getKey() &#123;</span><br><span class="line">        return key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setKey(String key) &#123;</span><br><span class="line">        this.key &#x3D; key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Integer getIndex() &#123;</span><br><span class="line">        return index;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setIndex(Integer index) &#123;</span><br><span class="line">        this.index &#x3D; index;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object getValue() &#123;</span><br><span class="line">        return value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setValue(Object value) &#123;</span><br><span class="line">        this.value &#x3D; value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Builder</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static class Builder &#123;</span><br><span class="line">        &#x2F;**</span><br><span class="line">         * SkuInfo.skuId时 SkuInfo.</span><br><span class="line">         *&#x2F;</span><br><span class="line">        private String parentKey;</span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * SkuInfo.skuId时 skuId</span><br><span class="line">         *&#x2F;</span><br><span class="line">        private String key;</span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * 数组时下标</span><br><span class="line">         *&#x2F;</span><br><span class="line">        private Integer index;</span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * value</span><br><span class="line">         *&#x2F;</span><br><span class="line">        private Object value;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * 无参构造</span><br><span class="line">         *&#x2F;</span><br><span class="line">        public Builder() &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * Builder</span><br><span class="line">         *&#x2F;</span><br><span class="line">        public RequestJsonParam.Builder parentKey(String parentKey) &#123;</span><br><span class="line">            this.parentKey &#x3D; parentKey;</span><br><span class="line">            return this;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * Builder</span><br><span class="line">         *&#x2F;</span><br><span class="line">        public RequestJsonParam.Builder key(String key) &#123;</span><br><span class="line">            this.key &#x3D; key;</span><br><span class="line">            return this;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * Builder</span><br><span class="line">         *&#x2F;</span><br><span class="line">        public RequestJsonParam.Builder index(int index) &#123;</span><br><span class="line">            this.index &#x3D; index;</span><br><span class="line">            return this;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * Builder</span><br><span class="line">         *&#x2F;</span><br><span class="line">        public RequestJsonParam.Builder value(Object value) &#123;</span><br><span class="line">            this.value &#x3D; value;</span><br><span class="line">            return this;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;**</span><br><span class="line">         * build</span><br><span class="line">         *&#x2F;</span><br><span class="line">        public RequestJsonParam build() &#123;</span><br><span class="line">            return new RequestJsonParam(this.parentKey, this.key, this.index, this.value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2022/02/09/java-jvm-config/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">java-jvm-config</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        牧羊使的传说
+      
+    </h3>
+    <p class="avatar-slogan">
+      你从远处来，恰逢我在。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/">入门教程</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7%E6%90%AD%E5%BB%BA/">工具搭建</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE/">项目配置</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/github/" style="font-size: 15px;">github</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/maven/" style="font-size: 10px;">maven</a> <a href="/tags/mysql/" style="font-size: 10px;">mysql</a> <a href="/tags/spring/" style="font-size: 10px;">spring</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 15px;">中间件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">时光轴</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/12/23/java-tomcat-filter-color-parse/">java filter 解析网关入参</a>
+          </li>
+        
+          <li>
+            <a href="/2022/02/09/java-jvm-config/">java-jvm-config</a>
+          </li>
+        
+          <li>
+            <a href="/2021/10/23/java-spi/">Java SPI 应用</a>
+          </li>
+        
+          <li>
+            <a href="/2021/09/05/self-spring-tag/">java 自定义spring标签</a>
+          </li>
+        
+          <li>
+            <a href="/2021/08/30/static-inner-class/">静态内部类</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://github.com/201619825" title target='_blank'
+        >遗世、遇夕</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2023 遗世、遇夕 &nbsp;&nbsp;
+    驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">牧羊使的传说告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">档案</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haru02.model.json"},"display":{"position":"right","width":180,"height":360},"mobile":{"show":true},"react":{"opacity":0.9}});</script></body>
+</html>
+<script type="text/javascript">
+    //只在桌面版网页启用特效
+  var windowWidth = $(window).width();
+  if (windowWidth > 768) {
+      document.write('<script type="text/javascript" src="/js/sakura.js"><\/script>');
+  }
+</script>

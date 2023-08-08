@@ -59,6 +59,57 @@
       <div id="middlecontent" title class="global-width sidebar-right">
         <section id="main">
   
+    <article id="post-java-tomcat-filter-color-parse" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/12/23/java-tomcat-filter-color-parse/">java filter 解析网关入参</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2022/12/23/java-tomcat-filter-color-parse/" class="article-date">
+  <time datetime="2022-12-23T02:44:58.000Z" itemprop="datePublished">2022-12-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
+  </div>
+
+    
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-mac" itemprop="articleBody">
+      
+        Java filter 解析网关入参
+1. 前言 OncePerRequestFilter
+一个Filter在对一次客户端请求request的处理中，常识上的理解，应该只被应用一次。这种理解很直观，也很合理，然而实际情况并非如此。Spring给出的解决方案是OncePerRequestFilter。如果想让一个Filter在一次请求处理的过程中只被应用一次，就让这个Filter继承自OncePerRequestFilter。Spring自身提供的这类的Filter,都继承自该过滤器基类。
+
+ 1. 解析网关body中入参，并继承HttpServletRequestWrapper修改入参传入
+ 
+        
+          <p class="article-more-link">
+            <a href="/2022/12/23/java-tomcat-filter-color-parse/#more">阅读全文</a>
+          </p>
+        
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
     <article id="post-java-jvm-config" class="article global-container article-type-post" itemscope itemprop="blogPost">
   
     <header class="article-header">
@@ -574,73 +625,6 @@ TCP建立连接三次握手，断开连接四次挥手。如果两次握手，
 </article>
 
   
-    <article id="post-jdk-dynamic-proxy" class="article global-container article-type-post" itemscope itemprop="blogPost">
-  
-    <header class="article-header">
-      
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/04/20/jdk-dynamic-proxy/">java jdk动态代理</a>
-    </h1>
-  
-
-    </header>
-  
-  <div class="article-meta">
-    <a href="/2021/04/20/jdk-dynamic-proxy/" class="article-date">
-  <time datetime="2021-04-20T11:47:39.000Z" itemprop="datePublished">2021-04-20</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%9F%A5%E8%AF%86%E5%AE%9D%E5%85%B8/">知识宝典</a>
-  </div>
-
-    
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-  </div>
-  
-
-  <div class="article-inner">
-    
-    <div class="article-content article-content-mac" itemprop="articleBody">
-      
-        JDK动态代理（AOP）使用及实现原理分析
-1. 前言
-介绍:我们需要掌握的程度
-
-动态代理(理解) 基于反射机制
-
-掌握的程度:
-
- * 什么是动态代理?
-   
-   
- * 动态代理能够做什么?
-   
-   
-
-后面我们在用Spirng和Mybatis的时候,要理解怎么使用的.
-
- 1. 什么是代理?
-    代理,在我们日常生活之中就有体现,代购,中介,换ip,商家等等，比如有一家美国的大学,可以对全世界招生.留学中介(代理 )，留学中介(代理):帮助这家美国的学校招生,中介是学校的代理中介是代替学校完成招生功能，代理特点：
-
-中介和代理他们要做的事情是一致的:招生
-中介是学校代理,
-        
-          <p class="article-more-link">
-            <a href="/2021/04/20/jdk-dynamic-proxy/#more">阅读全文</a>
-          </p>
-        
-      
-    </div>
-    
-  </div>
-  
-  
-</article>
-
-  
 
 
   <nav id="page-nav">
@@ -691,7 +675,7 @@ TCP建立连接三次握手，断开连接四次挥手。如果两次握手，
   <div class="widget-box">
     <h3 class="widget-title">时光轴</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/12/">十二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li></ul>
     </div>
   </div>
 
@@ -701,6 +685,10 @@ TCP建立连接三次握手，断开连接四次挥手。如果两次握手，
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2022/12/23/java-tomcat-filter-color-parse/">java filter 解析网关入参</a>
+          </li>
         
           <li>
             <a href="/2022/02/09/java-jvm-config/">java-jvm-config</a>
@@ -716,10 +704,6 @@ TCP建立连接三次握手，断开连接四次挥手。如果两次握手，
         
           <li>
             <a href="/2021/08/30/static-inner-class/">静态内部类</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/03/mq-info1/">MQ的使用及介绍</a>
           </li>
         
       </ul>
@@ -742,7 +726,7 @@ TCP建立连接三次握手，断开连接四次挥手。如果两次握手，
       </div>
       <footer id="footer">
   <div class="foot-box global-width">
-    &copy; 2022 遗世、遇夕 &nbsp;&nbsp;
+    &copy; 2023 遗世、遇夕 &nbsp;&nbsp;
     驱动于 <a href="http://hexo.io/" target="_blank">Hexo</a>
     &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
     <br>
